@@ -74,11 +74,21 @@ jobs:
 
     steps:
       - name: 觸發 Render 後端部署
+        env:
+          HOOK_URL: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
         run: |
-          curl -s --fail -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" \
-            -o /dev/null -w "HTTP status: %{http_code}\n"
+          if [ -n "$HOOK_URL" ]; then
+            curl -s --fail -X POST "$HOOK_URL" -o /dev/null -w "HTTP status: %{http_code}\n"
+          else
+            echo "RENDER_BACKEND_DEPLOY_HOOK 未設定，略過部署。"
+          fi
 
       - name: 觸發 Render 前端部署
+        env:
+          HOOK_URL: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
         run: |
-          curl -s --fail -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" \
-            -o /dev/null -w "HTTP status: %{http_code}\n"
+          if [ -n "$HOOK_URL" ]; then
+            curl -s --fail -X POST "$HOOK_URL" -o /dev/null -w "HTTP status: %{http_code}\n"
+          else
+            echo "RENDER_FRONTEND_DEPLOY_HOOK 未設定，略過部署。"
+          fi
