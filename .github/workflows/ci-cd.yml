@@ -1,0 +1,84 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Job 1：後端 Maven Build + Test
+  # ─────────────────────────────────────────────
+  backend:
+    name: Backend — Maven Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 取得程式碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: 編譯並執行整合測試
+        working-directory: backend
+        # Testcontainers 需要 Docker（ubuntu-latest 預設已提供）
+        run: mvn -B verify
+
+  # ─────────────────────────────────────────────
+  # Job 2：前端 npm Build + Lint
+  # ─────────────────────────────────────────────
+  frontend:
+    name: Frontend — npm Build & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 取得程式碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 安裝依賴
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint 檢查
+        working-directory: frontend
+        run: npm run lint
+
+      - name: 建置前端
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: http://localhost:8083
+        run: npm run build
+
+  # ─────────────────────────────────────────────
+  # Job 3：Render 部署（僅 push 到 main 且兩個 CI 都通過）
+  # ─────────────────────────────────────────────
+  deploy:
+    name: Deploy — Trigger Render
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    # PR 不部署，只有直接 push 到 main 才部署
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 觸發 Render 後端部署
+        run: |
+          curl -s --fail -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}" \
+            -o /dev/null -w "HTTP status: %{http_code}\n"
+
+      - name: 觸發 Render 前端部署
+        run: |
+          curl -s --fail -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}" \
+            -o /dev/null -w "HTTP status: %{http_code}\n"
