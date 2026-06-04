@@ -1,6 +1,10 @@
 server:
   port: 8083
 
+session:
+  # 本地開發用 Lax，生產環境（跨域）設 None
+  cookie-same-site: ${SESSION_COOKIE_SAME_SITE:Lax}
+
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/shoppingcart}

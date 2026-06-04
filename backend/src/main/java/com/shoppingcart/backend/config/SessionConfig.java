@@ -1,6 +1,7 @@
 package com.shoppingcart.backend.config;
 
 import com.shoppingcart.backend.filter.SessionFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SessionConfig {
 
+    /** SameSite 屬性，本地預設 Lax，跨域生產環境設 None */
+    @Value("${session.cookie-same-site:Lax}")
+    private String cookieSameSite;
+
     /**
      * 建立並設定 SessionFilter 的 FilterRegistrationBean。
      * 攔截路徑設為 {@code /api/*}，涵蓋所有購物車相關 API。
@@ -24,8 +29,8 @@ public class SessionConfig {
         // 建立 FilterRegistrationBean，包裝 SessionFilter 實例
         FilterRegistrationBean<SessionFilter> registration = new FilterRegistrationBean<>();
 
-        /** 注入 SessionFilter 實作 */
-        registration.setFilter(new SessionFilter());
+        /** 注入 SessionFilter 實作，傳入 SameSite 設定 */
+        registration.setFilter(new SessionFilter(cookieSameSite));
 
         /** 攔截路徑：所有 /api/ 下的端點 */
         registration.addUrlPatterns("/api/*");

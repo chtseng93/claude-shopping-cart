@@ -23,6 +23,13 @@ public class SessionFilter extends OncePerRequestFilter {
     /** request attribute 的 key 名稱 */
     private static final String ATTR_KEY = "sessionId";
 
+    /** SameSite 屬性，本地用 Lax，跨域生產環境用 None */
+    private final String sameSite;
+
+    public SessionFilter(String sameSite) {
+        this.sameSite = sameSite;
+    }
+
     /**
      * 核心過濾邏輯：
      * 1. 從請求 cookie 中尋找 SESSION_ID。
@@ -77,9 +84,10 @@ public class SessionFilter extends OncePerRequestFilter {
      * @param sessionId 要設定的 session ID 值
      */
     private void writeSessionCookie(HttpServletResponse response, String sessionId) {
-        // Jakarta Servlet 6 的 Cookie API 尚未直接支援 SameSite，改用 addHeader 手動組裝
+        // SameSite=None 時必須加 Secure（瀏覽器規範要求）
+        String secure = "None".equalsIgnoreCase(sameSite) ? "; Secure" : "";
         String cookieValue = COOKIE_NAME + "=" + sessionId
-                + "; HttpOnly; SameSite=Lax; Path=/";
+                + "; HttpOnly; SameSite=" + sameSite + secure + "; Path=/";
         response.addHeader("Set-Cookie", cookieValue);
     }
 }
