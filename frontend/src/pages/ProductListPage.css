@@ -1,0 +1,170 @@
+/* ============================================================
+   ProductListPage.css — 家具商品列表頁（極簡白色風格）
+   ============================================================ */
+
+.plp-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem 3rem;
+}
+
+@media (max-width: 640px) {
+  .plp-container {
+    padding: 0 1rem 2rem;
+  }
+}
+
+.plp-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.75rem;
+  color: #0d0d0d;
+  letter-spacing: -0.02em;
+}
+
+.plp-status {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b6b6b;
+  margin-top: 4rem;
+}
+
+.plp-status--error {
+  color: #c0392b;
+}
+
+/* ── 商品 Grid（2 欄固定，大螢幕 4 欄） ── */
+.plp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── 商品卡片 ── */
+.plp-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: box-shadow 200ms ease;
+}
+
+.plp-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+}
+
+/* ── 圖片 ── */
+.plp-card__img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  background: #f5f5f5;
+}
+
+.plp-card__img-placeholder {
+  width: 100%;
+  height: 200px;
+  background: #f2f2f2;
+  flex-shrink: 0;
+}
+
+/* ── 卡片內容 ── */
+.plp-card__body {
+  padding: 1rem 1rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.plp-card__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0d0d0d;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  letter-spacing: -0.01em;
+}
+
+.plp-card__desc {
+  font-size: 0.8rem;
+  color: #8a8a8a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plp-card__price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0d0d0d;
+  margin: 0.25rem 0 0;
+  letter-spacing: -0.01em;
+}
+
+.plp-card__stock {
+  font-size: 0.78rem;
+  color: #6b6b6b;
+  margin: 0;
+}
+
+.plp-card__stock--sold-out {
+  color: #b0b0b0;
+}
+
+/* ── 卡片底部（按鈕區）── */
+.plp-card__footer {
+  padding: 0.875rem 1rem 1rem;
+}
+
+/* ── 가입購物車按鈕（黑底白字）── */
+.plp-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #0d0d0d;
+  color: #fff;
+  letter-spacing: 0.01em;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.plp-btn:hover:not(:disabled) {
+  opacity: 0.82;
+}
+
+.plp-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.plp-btn:disabled {
+  cursor: not-allowed;
+}
+
+.plp-btn--sold-out {
+  background: #e0e0e0;
+  color: #9a9a9a;
+}
+
+.plp-btn--sold-out:disabled {
+  opacity: 1;
+}
+
+.plp-btn--done {
+  background: #2d6a4f;
+  opacity: 1;
+}
+
+.plp-btn--done:disabled {
+  opacity: 1;
+}

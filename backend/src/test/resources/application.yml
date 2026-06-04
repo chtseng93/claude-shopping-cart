@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    hibernate:
+      # 測試環境由 schema.sql 管理 DDL，JPA 不自動 validate/create
+      ddl-auto: none
+    show-sql: false
+  sql:
+    init:
+      # 確保測試時也執行 schema.sql 與 data.sql
+      mode: always
+
+logging:
+  level:
+    com.shoppingcart: WARN
+    org.testcontainers: WARN

@@ -1,0 +1,61 @@
+/* =============================================
+   Toast 浮動提示元件樣式
+   定位於右下角，含滑入與淡出 CSS 動畫
+   ============================================= */
+
+/**
+ * Toast 容器
+ * 固定於視窗右下角，不影響頁面排版流
+ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+
+  /* 外觀 */
+  background-color: #323232;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  /* 預設不可見，動畫控制出現與消失 */
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+
+  /* 過渡基礎設定（show/hide 切換時套用） */
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+/**
+ * 顯示狀態：滑入 + 淡入
+ * 當 .toast--show class 加上時觸發
+ */
+.toast--show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+
+  /* 進場使用較快的 ease-out */
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+/**
+ * 隱藏狀態：淡出 + 向下滑出
+ * 移除 .toast--show 後回到預設，transition 自動執行
+ */
+.toast--hide {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 250ms ease-in,
+    transform 250ms ease-in;
+}

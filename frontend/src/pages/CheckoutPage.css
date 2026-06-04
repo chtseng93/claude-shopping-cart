@@ -1,0 +1,132 @@
+/* ============================================================
+   CheckoutPage.css — 結帳頁（極簡白色風格）
+   ============================================================ */
+
+.checkout-container {
+  max-width: 520px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+}
+
+@media (max-width: 600px) {
+  .checkout-container {
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+}
+
+.checkout-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0d0d0d;
+  margin: 0 0 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.checkout-status {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b6b6b;
+  margin-top: 3rem;
+}
+
+.checkout-api-error {
+  background: #fff5f5;
+  border: 1px solid #e0b0b0;
+  border-radius: 8px;
+  color: #c0392b;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.checkout-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0d0d0d;
+  letter-spacing: 0.01em;
+}
+
+.checkout-required {
+  color: #c0392b;
+  margin-left: 2px;
+}
+
+.checkout-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #0d0d0d;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.checkout-input:focus {
+  border-color: #0d0d0d;
+  box-shadow: 0 0 0 3px rgba(13, 13, 13, 0.08);
+}
+
+.checkout-input--error {
+  border-color: #c0392b;
+}
+
+.checkout-input--error:focus {
+  border-color: #c0392b;
+  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+}
+
+.checkout-error-msg {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #c0392b;
+  font-weight: 500;
+}
+
+.checkout-submit-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #fff;
+  background: #0d0d0d;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.checkout-submit-btn:hover:not(:disabled) {
+  opacity: 0.82;
+}
+
+.checkout-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.checkout-submit-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

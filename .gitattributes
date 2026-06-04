@@ -1,0 +1,4 @@
+# 統一換行符號，確保跨平台一致性
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf

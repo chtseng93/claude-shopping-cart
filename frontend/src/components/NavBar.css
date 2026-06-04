@@ -1,0 +1,111 @@
+/* =============================================
+   NavBar — 白底頂部導覽列，上下細線
+   ============================================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  background-color: #ffffff;
+  border-top: 1.5px solid #e2e2e2;
+  border-bottom: 1.5px solid #e2e2e2;
+  height: 60px;
+}
+
+.navbar__inner {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ---- Logo ---- */
+.navbar__logo {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0d0d0d;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.navbar__logo:hover {
+  color: #444;
+}
+
+/* ---- 右側操作區 ---- */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ---- 購物車連結 ---- */
+.navbar__cart-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #0d0d0d;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background-color 150ms ease;
+}
+
+.navbar__cart-link:hover {
+  background-color: #f0f0f0;
+  color: #0d0d0d;
+}
+
+/* ---- 數量徽章 ---- */
+.navbar__badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  background-color: #0d0d0d;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  z-index: 1;
+}
+
+.navbar__badge--bounce {
+  animation: badge-bounce 300ms ease-out;
+}
+
+@keyframes badge-bounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.5); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.navbar__cart-icon--shake {
+  display: inline-block;
+  animation: cart-shake 300ms ease-in-out;
+}
+
+@keyframes cart-shake {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(-12deg); }
+  50%  { transform: rotate(10deg); }
+  75%  { transform: rotate(-6deg); }
+  100% { transform: rotate(0deg); }
+}
