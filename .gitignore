@@ -28,3 +28,6 @@ Thumbs.db
 
 # Claude Code 本地設定
 .claude/
+
+# 本地說明文件（不上傳）
+docs/
