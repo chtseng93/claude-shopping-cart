@@ -102,8 +102,8 @@ graph TD
 
 ## 🚀 CI/CD 與部署
 
-- □ **T17** `[Wave 4]` `依賴:T16` 建立 `.gitignore`、初始化 Git 儲存庫，並推送至 GitHub（`https://github.com/chtseng93/claude-shopping-cart.git`）
-- □ **T18** `[Wave 4]` `依賴:T17` 建立 GitHub Actions CI/CD 工作流程（`.github/workflows/`）：後端 Maven Build + Test、前端 npm Build + Lint、合併主線後觸發 Render 部署
+- ☑ **T17** `[Wave 4]` `依賴:T16` 建立 `.gitignore`、初始化 Git 儲存庫，並推送至 GitHub（`https://github.com/chtseng93/claude-shopping-cart.git`）
+- ☑ **T18** `[Wave 4]` `依賴:T17` 建立 GitHub Actions CI/CD 工作流程（`.github/workflows/`）：後端 Maven Build + Test、前端 npm Build + Lint、合併主線後觸發 Render 部署
 - □ **T19** `[Wave 4]` `依賴:T17` 建立 Render 部署設定（`render.yaml`）：PostgreSQL 資料庫、後端 Web Service（Docker）、前端 Static Site（Docker/Nginx）
 
 ---
@@ -191,4 +191,11 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-04 | T15 | 整合測試全部通過（15/15），修正 BackendApplicationTests + ProductApiIntegrationTest 舊商品名稱斷言 |
 | 2026-06-04 | T16 | Playwright E2E 全部通過（8/8），修正 toHaveCount 型別錯誤及 tbody 選擇器，完成所有測試 |
 | 2026-06-04 | — | 新增 T17–T19（CI/CD + Git 上傳 + Render 部署），待下次執行 |
+| 2026-06-04 | T17 | 建立 .gitignore（補 e2e/node_modules + .claude/）、.gitattributes、git init、初始 commit（83 檔案）、推送至 GitHub |
+| 2026-06-04 | T18 | 新增 .github/workflows/ci-cd.yml（backend / frontend / deploy 三個 job），推送至 GitHub |
+| 2026-06-04 | T18 修正 | CI lint 失敗：補 frontend/package-lock.json（npm ci 需要）、關閉 react/prop-types 和 react-refresh 警告規則 |
+| 2026-06-04 | T18 修正 | deploy job 在 GitHub Secrets 未設定時改用 shell if 判斷跳過，避免空 URL 讓 CI 失敗 |
+| 2026-06-04 | T18 修正 | 新增 workflow_dispatch，可在 GitHub Actions 頁面手動觸發而不需 push |
+| 2026-06-04 | T19（進行中）| Render 部署除錯：① CORS 設定改由環境變數 CORS_ALLOWED_ORIGINS 控制，支援前後端不同域 |
+| 2026-06-04 | T19（進行中）| ② SESSION_ID cookie 修正：本地用 SameSite=Lax，Render 生產環境需設 SESSION_COOKIE_SAME_SITE=None，否則瀏覽器因跨域規則不回傳 cookie，每次請求都變成新 session，購物車永遠是空的 |
 
