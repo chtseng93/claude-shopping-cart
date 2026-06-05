@@ -105,6 +105,7 @@ graph TD
 - ☑ **T17** `[Wave 4]` `依賴:T16` 建立 `.gitignore`、初始化 Git 儲存庫，並推送至 GitHub（`https://github.com/chtseng93/claude-shopping-cart.git`）
 - ☑ **T18** `[Wave 4]` `依賴:T17` 建立 GitHub Actions CI/CD 工作流程（`.github/workflows/`）：後端 Maven Build + Test、前端 npm Build + Lint、合併主線後觸發 Render 部署
 - □ **T19** `[Wave 4]` `依賴:T17` 建立 Render 部署設定（`render.yaml`）：PostgreSQL 資料庫、後端 Web Service（Docker）、前端 Static Site（Docker/Nginx）
+- □ **T20** `[Wave 5]` `依賴:T19` 使用 agent-browser 操作本地與 Render 線上環境，驗證完整購物流程（瀏覽商品 → 加入購物車 → 調整數量 → 結帳成功）
 
 ---
 
@@ -198,4 +199,5 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-04 | T18 修正 | 新增 workflow_dispatch，可在 GitHub Actions 頁面手動觸發而不需 push |
 | 2026-06-04 | T19（進行中）| Render 部署除錯：① CORS 設定改由環境變數 CORS_ALLOWED_ORIGINS 控制，支援前後端不同域 |
 | 2026-06-04 | T19（進行中）| ② SESSION_ID cookie 修正：本地用 SameSite=Lax，Render 生產環境需設 SESSION_COOKIE_SAME_SITE=None，否則瀏覽器因跨域規則不回傳 cookie，每次請求都變成新 session，購物車永遠是空的 |
+| 2026-06-05 | T20（新增）| 新增 agent-browser 操作任務，依賴 T19 完成後執行，驗證本地與 Render 線上環境的完整購物流程 |
 
