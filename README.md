@@ -40,6 +40,9 @@
 6. **請 AI 分析開發順序** — 分析任務相依與可平行的部分。
 7. **開始實作** — 請 AI「根據 todolist.md / api.md / spec.md 開發」。
 8. **撰寫測試** — E2E 測試（Playwright）驗證完整流程。
+9. **agent-browser** - 使用 agent-browser 完整驗證本地購物流程，產出 reports/checkout-sop.md。
+
+
 
 ---
 
@@ -52,6 +55,27 @@
 | [api.md](api.md) | API 文件 |
 | [CLAUDE.md](CLAUDE.md) | 開發規範 |
 | [todolist.md](todolist.md) | 任務追蹤 |
+| [reports/checkout-sop.md](reports/checkout-sop.md) | agent-browser 購物結帳流程 SOP |
+| [.claude/skills/agent-browser/SKILL.md](.claude/skills/agent-browser/SKILL.md) | agent-browser-checkout skill（本專案結帳流程） |
+
+---
+
+## Claude Code Skills
+
+### 使用者層級（`~/.claude/skills/`，跨專案可用）
+
+| Skill | 觸發指令 | 說明 |
+|-------|----------|------|
+| `skill-creator` | `/skill-creator` | 引導建立新 Skill：收集名稱與用途，自動生成並安裝 SKILL.md |
+| `agent-browser` | `/agent-browser` | agent-browser CLI 通用指南，含 React SPA 注意事項與疑難排解 |
+
+### 專案層級（`.claude/skills/`，僅此專案）
+
+| Skill | 觸發指令 | 說明 |
+|-------|----------|------|
+| `agent-browser-checkout` | `/agent-browser-checkout` | 本專案購物車結帳完整操作流程、驗證點與 API 格式備忘 |
+
+> Skills 遵循 [agentskills.io](https://agentskills.io) 開放標準，本質是帶有 `SKILL.md` 的資料夾。
 
 ---
 

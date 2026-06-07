@@ -105,7 +105,8 @@ graph TD
 - ☑ **T17** `[Wave 4]` `依賴:T16` 建立 `.gitignore`、初始化 Git 儲存庫，並推送至 GitHub（`https://github.com/chtseng93/claude-shopping-cart.git`）
 - ☑ **T18** `[Wave 4]` `依賴:T17` 建立 GitHub Actions CI/CD 工作流程（`.github/workflows/`）：後端 Maven Build + Test、前端 npm Build + Lint、合併主線後觸發 Render 部署
 - □ **T19** `[Wave 4]` `依賴:T17` 建立 Render 部署設定（`render.yaml`）：PostgreSQL 資料庫、後端 Web Service（Docker）、前端 Static Site（Docker/Nginx）
-- □ **T20** `[Wave 5]` `依賴:T19` 使用 agent-browser 操作本地與 Render 線上環境，驗證完整購物流程（瀏覽商品 → 加入購物車 → 調整數量 → 結帳成功）
+- ☑ **T20** `[Wave 5]` `依賴:T19` 使用 agent-browser 操作本地與 Render 線上環境，驗證完整購物流程（瀏覽商品 → 加入購物車 → 調整數量 → 結帳成功）
+- ☑ **T21** `[Wave 5]` `依賴:T20` 建立 Claude Code Skills：`skill-creator`（引導建立新 skill）與 `agent-browser`（CLI 操作指南，含 React SPA 注意事項），安裝至使用者層級 `~/.claude/skills/`；專案層級新增 `agent-browser-checkout`（本專案結帳流程）
 
 ---
 
@@ -199,5 +200,7 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-04 | T18 修正 | 新增 workflow_dispatch，可在 GitHub Actions 頁面手動觸發而不需 push |
 | 2026-06-04 | T19（進行中）| Render 部署除錯：① CORS 設定改由環境變數 CORS_ALLOWED_ORIGINS 控制，支援前後端不同域 |
 | 2026-06-04 | T19（進行中）| ② SESSION_ID cookie 修正：本地用 SameSite=Lax，Render 生產環境需設 SESSION_COOKIE_SAME_SITE=None，否則瀏覽器因跨域規則不回傳 cookie，每次請求都變成新 session，購物車永遠是空的 |
-| 2026-06-05 | T20（新增）| 新增 agent-browser 操作任務，依賴 T19 完成後執行，驗證本地與 Render 線上環境的完整購物流程 |
+| 2026-06-05 | T20（新增）| 新增 agent-browser 操作任務，依賴 T19 完成後執行，驗證本地與 Render 線上環境的完整購物流程 ，並將各步驟的操作指令、截圖與驗證結果整理至 docs/checkout-sop.md (中英文版) |
+| 2026-06-07 | T20（完成）| 使用 agent-browser 完整驗證本地購物流程（6 步驟全通過）；發現並修正 GlobalExceptionHandler 缺少 log；釐清 SPA 導航/表單填寫/送出正確作法；產出 reports/checkout-sop.md（中英文對照，截圖 base64 內嵌）|
+| 2026-06-07 | T21（完成）| 建立 `skill-creator` skill（~/.claude/skills/skill-creator/SKILL.md）：引導使用者定義 skill 名稱與用途，自動生成並安裝 SKILL.md；建立 `agent-browser` skill（~/.claude/skills/agent-browser/SKILL.md）：涵蓋基本指令、React SPA 注意事項、標準操作流程與疑難排解表 |
 

@@ -26,8 +26,10 @@ e2e/playwright-report/
 .DS_Store
 Thumbs.db
 
-# Claude Code 本地設定
+# Claude Code 本地設定（skills 除外，需跟著專案走）
 .claude/
+!.claude/skills/
+!.claude/skills/**
 
 # 本地說明文件（不上傳）
 docs/
