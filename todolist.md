@@ -203,4 +203,7 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-05 | T20（新增）| 新增 agent-browser 操作任務，依賴 T19 完成後執行，驗證本地與 Render 線上環境的完整購物流程 ，並將各步驟的操作指令、截圖與驗證結果整理至 docs/checkout-sop.md (中英文版) |
 | 2026-06-07 | T20（完成）| 使用 agent-browser 完整驗證本地購物流程（6 步驟全通過）；發現並修正 GlobalExceptionHandler 缺少 log；釐清 SPA 導航/表單填寫/送出正確作法；產出 reports/checkout-sop.md（中英文對照，截圖 base64 內嵌）|
 | 2026-06-07 | T21（完成）| 建立 `skill-creator` skill（~/.claude/skills/skill-creator/SKILL.md）：引導使用者定義 skill 名稱與用途，自動生成並安裝 SKILL.md；建立 `agent-browser` skill（~/.claude/skills/agent-browser/SKILL.md）：涵蓋基本指令、React SPA 注意事項、標準操作流程與疑難排解表 |
+| 2026-06-07 | UI 改版 | 商品列表頁重新設計為 FurnitureCo. 暖米色風格：① index.html 加入 Playfair Display 字體 + 標題改為 FurnitureCo. ② index.css / NavBar.css 背景改為 #faf7f2 ③ ProductListPage.css 全新 Hero 區塊（大 serif 標題、說明文字）、琥珀色分隔線、綠色庫存、卡片 hover 效果 ④ ProductListPage.jsx 加入 Hero HTML 結構、琥珀分隔線、按鈕購物車 SVG 圖示 |
+| 2026-06-09 | UI 改版 | Hero 右側改為季節特輯版塊（New Season Edit / Autumn Collection）：垂直琥珀分隔線 + 說明文字 + 水平細線 + Explore collection CTA + tagline；移除原本藍圖網格裝飾 |
+| 2026-06-09 | UI 改版 | 標籤頁 favicon 換為自製 SVG（房子外框 + 沙發圖示，深色線條 #1e2330 + 淺灰底，儲存於 public/logo.svg） |
 

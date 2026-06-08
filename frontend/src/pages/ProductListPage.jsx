@@ -130,8 +130,39 @@ export default function ProductListPage() {
   /* ── 正常渲染 ── */
   return (
     <main className="plp-container">
-      <h1 className="plp-title">Products</h1>
-      <div className="plp-grid">
+      {/* Hero 區塊：左側大標題 + 垂直分隔線 + 右側季節特輯 */}
+      <div className="plp-hero">
+        <div className="plp-hero__content">
+          <span className="plp-hero__accent" aria-hidden="true" />
+          <h1 className="plp-hero__title">Products</h1>
+          <p className="plp-hero__subtitle">
+            Timeless design. Quality craftsmanship.<br />
+            Made for modern living.
+          </p>
+        </div>
+
+        <div className="plp-hero__vline" aria-hidden="true" />
+
+        <div className="plp-hero__panel">
+          <span className="plp-hero__panel-label">New Season Edit</span>
+          <h2 className="plp-hero__panel-title">Autumn Collection</h2>
+          <p className="plp-hero__panel-text">
+            Warm textures. Natural materials.<br />
+            Thoughtfully designed for the way you live.
+          </p>
+          <span className="plp-hero__panel-rule" aria-hidden="true" />
+          <a href="#plp-grid" className="plp-hero__panel-cta">
+            Explore collection <span aria-hidden="true">→</span>
+          </a>
+          <p className="plp-hero__panel-tagline" aria-hidden="true">
+            <span className="plp-hero__panel-tagline-line" />
+            Curated for calm interiors
+            <span className="plp-hero__panel-tagline-line" />
+          </p>
+        </div>
+      </div>
+
+      <div id="plp-grid" className="plp-grid">
         {products.map((product) => {
           const btnState = addingMap[product.id]
           const isSoldOut = product.stock === 0
@@ -139,7 +170,7 @@ export default function ProductListPage() {
 
           return (
             <article key={product.id} className="plp-card">
-              {/* 商品圖片：有值則顯示 img，onError 時改為灰色佔位區塊 */}
+              {/* 商品圖片：有值則顯示 img，onError 時改為佔位區塊 */}
               <ProductImage imageUrl={product.imageUrl} name={product.name} />
 
               <div className="plp-card__body">
@@ -149,6 +180,8 @@ export default function ProductListPage() {
                 {product.description && (
                   <p className="plp-card__desc">{product.description}</p>
                 )}
+                {/* 琥珀色分隔線 */}
+                <span className="plp-card__divider" aria-hidden="true" />
                 <p className="plp-card__price">
                   NT${Number(product.price).toLocaleString()}
                 </p>
@@ -165,6 +198,14 @@ export default function ProductListPage() {
                   onClick={() => handleAddToCart(product.id)}
                   aria-label={isSoldOut ? `${product.name} — Sold Out` : `Add ${product.name} to cart`}
                 >
+                  {/* 購物車圖示：僅在正常狀態顯示 */}
+                  {!isSoldOut && !btnState && (
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <circle cx="9" cy="21" r="1"/>
+                      <circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.98-1.69l1.6-9.31H6"/>
+                    </svg>
+                  )}
                   {getButtonLabel(product)}
                 </button>
               </div>
