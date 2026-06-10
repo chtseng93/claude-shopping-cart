@@ -14,11 +14,13 @@ public class RecipientDto {
     @NotBlank(message = "姓名不可為空")
     private String name;
 
-    /** 收件人手機號碼，需符合台灣手機格式（09 開頭共 10 碼） */
+    /** 收件人手機號碼，需符合台灣手機格式（09 開頭共 10 碼）；@NotBlank 確保 null/空值被拒絕 */
+    @NotBlank(message = "手機號碼不可為空")
     @Pattern(regexp = "^09\\d{8}$", message = "手機號碼格式不正確，需符合 09XXXXXXXX 格式")
     private String phone;
 
-    /** 收件人電子郵件地址，需符合 Email 格式 */
+    /** 收件人電子郵件地址，需符合 Email 格式；@NotBlank 確保 null/空值被拒絕 */
+    @NotBlank(message = "Email 不可為空")
     @Email(message = "Email 格式不正確")
     private String email;
 

@@ -59,10 +59,12 @@ public class SessionFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 從 cookie 陣列中找出名稱為 SESSION_ID 的值；找不到則回傳 null。
+     * 從 cookie 陣列中找出名稱為 SESSION_ID 的值，並驗證其為合法 UUID 格式。
+     * 格式不符時視為無效（回傳 null），伺服器將重新產生新的 SESSION_ID，
+     * 防止客戶端偽造任意字串作為 session 識別碼。
      *
      * @param cookies 請求攜帶的 cookie 陣列，可能為 null
-     * @return SESSION_ID 的值，或 null
+     * @return 合法 UUID 格式的 SESSION_ID 值，或 null（不存在/格式錯誤）
      */
     private String extractSessionIdFromCookies(Cookie[] cookies) {
         if (cookies == null) {
@@ -70,10 +72,28 @@ public class SessionFilter extends OncePerRequestFilter {
         }
         for (Cookie cookie : cookies) {
             if (COOKIE_NAME.equals(cookie.getName())) {
-                return cookie.getValue();
+                return isValidUuid(cookie.getValue()) ? cookie.getValue() : null;
             }
         }
         return null;
+    }
+
+    /**
+     * 驗證字串是否為合法的 UUID 格式（標準 8-4-4-4-12 十六進位）。
+     *
+     * @param value 待驗證的字串
+     * @return true 若格式合法，否則 false
+     */
+    private boolean isValidUuid(String value) {
+        if (value == null) {
+            return false;
+        }
+        try {
+            UUID.fromString(value);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /**

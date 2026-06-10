@@ -33,3 +33,6 @@ Thumbs.db
 
 # 本地說明文件（不上傳）
 docs/
+
+# 自動產生的資安掃描報告
+reports/security-check-*.md

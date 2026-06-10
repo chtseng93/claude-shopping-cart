@@ -82,30 +82,38 @@ public class CartController {
 
     /**
      * 更新購物車明細數量。quantity = 0 時自動移除該明細，quantity > 0 則更新。
+     * sessionId 傳入 CartService 以驗證明細所有權，防止 IDOR。
      *
-     * @param itemId 路徑參數，購物車明細 UUID
-     * @param body   更新請求 DTO（quantity ≥ 0）
+     * @param request HTTP 請求（用於取得 sessionId）
+     * @param itemId  路徑參數，購物車明細 UUID
+     * @param body    更新請求 DTO（quantity ≥ 0）
      * @return 200 OK 更新後的完整購物車回應
      */
     @PatchMapping("/items/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public CartResponse updateItem(@PathVariable UUID itemId,
+    public CartResponse updateItem(HttpServletRequest request,
+                                   @PathVariable UUID itemId,
                                    @RequestBody @Valid UpdateItemRequest body) {
-        return cartService.updateItem(itemId, body.getQuantity());
+        String sessionId = SessionUtils.getSessionId(request);
+        return cartService.updateItem(itemId, body.getQuantity(), sessionId);
     }
 
     // ── T07b：移除明細 ────────────────────────────────────────────────────
 
     /**
      * 直接移除指定購物車明細（無論數量為何）。
+     * sessionId 傳入 CartService 以驗證明細所有權，防止 IDOR。
      *
-     * @param itemId 路徑參數，購物車明細 UUID
+     * @param request HTTP 請求（用於取得 sessionId）
+     * @param itemId  路徑參數，購物車明細 UUID
      * @return 200 OK 移除後的完整購物車回應
      */
     @DeleteMapping("/items/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public CartResponse removeItem(@PathVariable UUID itemId) {
-        return cartService.removeItem(itemId);
+    public CartResponse removeItem(HttpServletRequest request,
+                                   @PathVariable UUID itemId) {
+        String sessionId = SessionUtils.getSessionId(request);
+        return cartService.removeItem(itemId, sessionId);
     }
 
     // ── T08：結帳 ────────────────────────────────────────────────────────

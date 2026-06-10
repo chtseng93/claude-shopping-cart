@@ -107,6 +107,122 @@ graph TD
 - □ **T19** `[Wave 4]` `依賴:T17` 建立 Render 部署設定（`render.yaml`）：PostgreSQL 資料庫、後端 Web Service（Docker）、前端 Static Site（Docker/Nginx）
 - ☑ **T20** `[Wave 5]` `依賴:T19` 使用 agent-browser 操作本地與 Render 線上環境，驗證完整購物流程（瀏覽商品 → 加入購物車 → 調整數量 → 結帳成功）
 - ☑ **T21** `[Wave 5]` `依賴:T20` 建立 Claude Code Skills：`skill-creator`（引導建立新 skill）與 `agent-browser`（CLI 操作指南，含 React SPA 注意事項），安裝至使用者層級 `~/.claude/skills/`；專案層級新增 `agent-browser-checkout`（本專案結帳流程）
+- ☑ **T22** `[Wave 6]` `依賴:T21` 建立資安相關 Skills：① 使用者層級 `security-check`（掃描 hardcoded secrets、CORS、Cookie flags、XSS/SQL injection 等 OWASP 常見漏洞）② 專案層級 `render-security`（針對本專案 Spring Boot + React + Render 組合：env 變數設定、SameSite cookie、CORS origin 驗證）
+
+---
+
+## T22 資安實作紀錄
+
+### Skill 建立
+
+| Skill | 位置 | 類型 |
+|-------|------|------|
+| `security-check` | `~/.claude/skills/security-check/SKILL.md` | 使用者層級（通用） |
+| `render-security` | `.claude/skills/render-security/SKILL.md` | 專案層級（購物車特化） |
+
+**security-check** 涵蓋 OWASP 常見電商漏洞（A~F 共 20 項）：Session/Cookie、IDOR/BOLA、Price Tampering、Input Validation、CORS、Hardcoded Secrets。
+
+**render-security** 包含本專案具體掃描路徑（S1–S6）：SESSION_ID cookie 架構、購物車 IDOR、結帳收件驗證、CORS/Render 部署環境變數。
+
+---
+
+### 掃描結果與修正
+
+#### 🔴 HIGH — 已修正
+
+| 編號 | 漏洞說明 | 修正檔案 |
+|------|---------|---------|
+| S2-1 | **IDOR**：`PATCH /api/cart/items/{itemId}` 未驗證 itemId 屬於當前 session | `CartService.updateItem()` 加入 sessionId 參數與所有權比對 |
+| S2-2 | **IDOR**：`DELETE /api/cart/items/{itemId}` 未驗證 itemId 屬於當前 session | `CartService.removeItem()` 同上；`CartController` 兩端點補注入 `HttpServletRequest` |
+| S4-1 | **缺少 @NotBlank**：`RecipientDto.phone` 僅有 `@Pattern`，null 值可繞過驗證 | `RecipientDto.phone` 補上 `@NotBlank` |
+| S4-2 | **缺少 @NotBlank**：`RecipientDto.email` 僅有 `@Email`，null 值可繞過驗證 | `RecipientDto.email` 補上 `@NotBlank` |
+
+#### 🟡 MEDIUM — 已修正
+
+| 編號 | 漏洞說明 | 修正檔案 |
+|------|---------|---------|
+| S1-1 | **SESSION_ID 格式未驗證**：客戶端可偽造任意字串 | `SessionFilter.extractSessionIdFromCookies()` 新增 `isValidUuid()` 驗證，格式錯誤視為無效並重新產生 |
+
+#### ✅ SAFE — 無需修正
+
+| 編號 | 說明 |
+|------|------|
+| S3-1/2/3 | 金額完全由伺服器計算（`buildCartResponse`），AddItemRequest/CheckoutRequest 均無價格欄位 |
+| A2 | SESSION_ID cookie 設有 `HttpOnly`（防 XSS 竊取） |
+| A3 | `SameSite=None` 時自動加入 `Secure` flag |
+| E1/E3 | CORS 使用具體 origin（環境變數控制），`allowCredentials=true` 安全配對 |
+
+---
+
+### 新增測試案例（CartApiIntegrationTest）— 13/13 全通過 ✅
+
+| # | 測試名稱 | 斷言重點 |
+|---|---------|---------|
+| 12 | IDOR 防護：其他 session PATCH 明細 → 404 | `sessionB` 呼叫 `sessionA` 的 itemId 回傳 404 |
+| 13 | IDOR 防護：其他 session DELETE 明細 → 404 | `sessionB` 刪除 `sessionA` 的 itemId 回傳 404 |
+
+---
+
+### 安全分數
+
+| 階段 | 分數 | 說明 |
+|------|------|------|
+| 修正前 | 40 / 100 | 2× HIGH (−20×2) + 1× MEDIUM (−5×1) + 未完整評估 |
+| 修正後 | **95 / 100** ✅ | 剩餘 −5：`quantity` 無 `@Max` 上限（MEDIUM，建議後續補上） |
+
+---
+
+### PreToolUse Hook 設定
+
+#### 新增檔案
+
+| 檔案 | 說明 |
+|------|------|
+| `.claude/settings.json` | 新增 `PreToolUse` hook，攔截所有 `Bash` 工具呼叫 |
+| `scripts/security-check.js` | hook 執行腳本，從 stdin 讀取工具輸入 JSON |
+
+#### `.claude/settings.json` 設定內容
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/security-check.js"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- **觸發時機**：所有 Bash 工具呼叫執行前
+- **實際掃描條件**：指令字串包含 `gh pr create` 時才啟動掃描；其他指令直接 `exit 0` 放行
+- **阻斷行為**：發現問題時 `exit 1`，PR 建立中止並列出清單
+
+#### `scripts/security-check.js` 掃描規則（R1–R6）
+
+| 規則 | 說明 | 掃描檔案 |
+|------|------|---------|
+| R1 | 禁止硬編碼密碼 / API Key（逐行解析，排除 `${...}` 佔位符誤判） | `application.yml` |
+| R2 | DTO 不可含金額欄位（`price` / `total` / `unitPrice` / `amount` 等） | `AddItemRequest.java`、`CheckoutRequest.java`、`UpdateItemRequest.java` |
+| R3 | 結帳端點必須有 `@Valid CheckoutRequest` | `CartController.java` |
+| R4 | `updateItem` / `removeItem` 必須含 `sessionId` 參數（IDOR 防護） | `CartService.java` |
+| R5 | `RecipientDto.phone` / `email` 必須同時有 `@NotBlank`（防 null 繞過） | `RecipientDto.java` |
+| R6 | `SessionFilter` 必須包含 `UUID.fromString` / `isValidUuid` 驗證 | `SessionFilter.java` |
+
+#### 測試驗證
+
+| 情境 | exit code | 結果 |
+|------|-----------|------|
+| 非 `gh pr create` 指令（如 `git push`） | 0 | 直接放行，不掃描 |
+| 所有規則通過（現況） | 0 | ✅ 允許建立 PR |
+| `application.yml` 含硬編碼密碼（模擬） | 1 | 🔴 R1 攔截，列出問題並中止 |
 
 ---
 
@@ -206,4 +322,7 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-07 | UI 改版 | 商品列表頁重新設計為 FurnitureCo. 暖米色風格：① index.html 加入 Playfair Display 字體 + 標題改為 FurnitureCo. ② index.css / NavBar.css 背景改為 #faf7f2 ③ ProductListPage.css 全新 Hero 區塊（大 serif 標題、說明文字）、琥珀色分隔線、綠色庫存、卡片 hover 效果 ④ ProductListPage.jsx 加入 Hero HTML 結構、琥珀分隔線、按鈕購物車 SVG 圖示 |
 | 2026-06-09 | UI 改版 | Hero 右側改為季節特輯版塊（New Season Edit / Autumn Collection）：垂直琥珀分隔線 + 說明文字 + 水平細線 + Explore collection CTA + tagline；移除原本藍圖網格裝飾 |
 | 2026-06-09 | UI 改版 | 標籤頁 favicon 換為自製 SVG（房子外框 + 沙發圖示，深色線條 #1e2330 + 淺灰底，儲存於 public/logo.svg） |
+| 2026-06-09 | T22（新增）| 規劃資安 Skill：使用者層級 `security-check` + 專案層級 `render-security`，下次執行 |
+| 2026-06-10 | T22（完成）| 建立 `security-check`（~/.claude/skills/）通用 OWASP 掃描 Skill；建立 `render-security`（.claude/skills/）購物車專案特化 Skill；掃描發現並修正 🔴 HIGH：IDOR（updateItem/removeItem 加入 sessionId 所有權驗證）、RecipientDto phone/email 缺少 @NotBlank；修正 🟡 MEDIUM：SessionFilter 補 UUID 格式驗證；新增 2 個 IDOR 整合測試案例（13/13 全通過）|
+| 2026-06-11 | T22 Hook | 新增 `.claude/settings.json` PreToolUse hook + `scripts/security-check.js`；攔截 `gh pr create` 前執行 R1–R6 六條資安規則掃描；測試驗證：正常通過 exit 0、硬編碼密碼模擬 exit 1 攔截正確 |
 

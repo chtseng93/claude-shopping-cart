@@ -124,17 +124,24 @@ public class CartService {
     /**
      * 更新指定購物車明細的數量。
      * 若 quantity = 0，則自動移除該明細；quantity > 0 則更新為指定數量。
+     * 同時驗證明細屬於當前 session，防止 IDOR 攻擊。
      *
-     * @param itemId   購物車明細 UUID
-     * @param quantity 新數量（≥ 0；0 表示移除，由 @Valid 確保不為負）
+     * @param itemId    購物車明細 UUID
+     * @param quantity  新數量（≥ 0；0 表示移除，由 @Valid 確保不為負）
+     * @param sessionId 當前訪客 session 識別碼（用於所有權驗證）
      * @return 更新後的完整購物車回應
-     * @throws NotFoundException 若明細不存在
+     * @throws NotFoundException 若明細不存在或不屬於當前 session
      */
     @Transactional
-    public CartResponse updateItem(UUID itemId, int quantity) {
+    public CartResponse updateItem(UUID itemId, int quantity, String sessionId) {
         // 查詢明細，不存在則拋 404
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("購物車明細不存在"));
+
+        // 驗證明細屬於當前 session（防止 IDOR：他人無法修改其他 session 的購物車）
+        if (!item.getCart().getSessionId().equals(sessionId)) {
+            throw new NotFoundException("購物車明細不存在");
+        }
 
         Cart cart = item.getCart();
 
@@ -154,16 +161,23 @@ public class CartService {
 
     /**
      * 直接移除指定的購物車明細（無論數量為何）。
+     * 同時驗證明細屬於當前 session，防止 IDOR 攻擊。
      *
-     * @param itemId 購物車明細 UUID
+     * @param itemId    購物車明細 UUID
+     * @param sessionId 當前訪客 session 識別碼（用於所有權驗證）
      * @return 移除後的完整購物車回應
-     * @throws NotFoundException 若明細不存在
+     * @throws NotFoundException 若明細不存在或不屬於當前 session
      */
     @Transactional
-    public CartResponse removeItem(UUID itemId) {
+    public CartResponse removeItem(UUID itemId, String sessionId) {
         // 查詢明細，不存在則拋 404
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("購物車明細不存在"));
+
+        // 驗證明細屬於當前 session（防止 IDOR：他人無法刪除其他 session 的購物車明細）
+        if (!item.getCart().getSessionId().equals(sessionId)) {
+            throw new NotFoundException("購物車明細不存在");
+        }
 
         Cart cart = item.getCart();
 

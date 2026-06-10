@@ -461,6 +461,60 @@ class CartApiIntegrationTest {
     }
 
     @Test
+    @DisplayName("IDOR 防護：使用其他 session 嘗試 PATCH 明細 → 404 Not Found")
+    void updateItem_otherSessionId_returns404() {
+        // Session A 建立購物車並加入商品
+        ResponseEntity<CartResponse> initA = restTemplate.exchange(
+                "/api/cart", HttpMethod.GET,
+                new HttpEntity<>(headersWithSession(null)), CartResponse.class);
+        String sessionA = extractSessionId(initA);
+        ResponseEntity<CartResponse> addResp = addItem(sessionA, P1, 1);
+        UUID itemId = addResp.getBody().getItems().get(0).getItemId();
+
+        // Session B（不同 session）嘗試更新 Session A 的明細
+        ResponseEntity<CartResponse> initB = restTemplate.exchange(
+                "/api/cart", HttpMethod.GET,
+                new HttpEntity<>(headersWithSession(null)), CartResponse.class);
+        String sessionB = extractSessionId(initB);
+
+        ResponseEntity<String> resp = restTemplate.exchange(
+                "/api/cart/items/" + itemId,
+                HttpMethod.PATCH,
+                new HttpEntity<>(new UpdateItemRequest(5), headersWithSession(sessionB)),
+                String.class
+        );
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("IDOR 防護：使用其他 session 嘗試 DELETE 明細 → 404 Not Found")
+    void removeItem_otherSessionId_returns404() {
+        // Session A 建立購物車並加入商品
+        ResponseEntity<CartResponse> initA = restTemplate.exchange(
+                "/api/cart", HttpMethod.GET,
+                new HttpEntity<>(headersWithSession(null)), CartResponse.class);
+        String sessionA = extractSessionId(initA);
+        ResponseEntity<CartResponse> addResp = addItem(sessionA, P1, 1);
+        UUID itemId = addResp.getBody().getItems().get(0).getItemId();
+
+        // Session B 嘗試刪除 Session A 的明細
+        ResponseEntity<CartResponse> initB = restTemplate.exchange(
+                "/api/cart", HttpMethod.GET,
+                new HttpEntity<>(headersWithSession(null)), CartResponse.class);
+        String sessionB = extractSessionId(initB);
+
+        ResponseEntity<String> resp = restTemplate.exchange(
+                "/api/cart/items/" + itemId,
+                HttpMethod.DELETE,
+                new HttpEntity<>(headersWithSession(sessionB)),
+                String.class
+        );
+
+        assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
     @DisplayName("加入不存在的商品 → 404 Not Found")
     void addItem_nonExistentProduct_returns404() {
         ResponseEntity<CartResponse> initResp = restTemplate.exchange(
