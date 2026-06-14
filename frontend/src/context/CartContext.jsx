@@ -71,12 +71,14 @@ export function CartProvider({ children }) {
 
   /**
    * 送出結帳，完成後自動更新購物車 state（購物車會被清空）。
+   * 可傳入優惠券代碼，伺服器驗證並計算折扣（折扣金額由伺服器決定）。
    *
    * @param {{ name: string, phone: string, email: string, address: string }} recipient - 收件人資料
-   * @returns {Promise<Object>} 訂單摘要
+   * @param {string|null} [couponCode=null] - 優惠券代碼（選填）
+   * @returns {Promise<Object>} 訂單摘要（含 discountAmount、finalTotal、couponCode）
    */
-  const doCheckout = useCallback(async (recipient) => {
-    const result = await checkout(recipient)
+  const doCheckout = useCallback(async (recipient, couponCode = null) => {
+    const result = await checkout(recipient, couponCode)
     await refreshCart()
     return result
   }, [refreshCart])

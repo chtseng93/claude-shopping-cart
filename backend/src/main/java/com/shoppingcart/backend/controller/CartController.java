@@ -119,18 +119,19 @@ public class CartController {
     // ── T08：結帳 ────────────────────────────────────────────────────────
 
     /**
-     * 結帳端點：驗證收件資料、檢查庫存、扣減庫存、標記購物車已結帳，回傳訂單摘要。
+     * 結帳端點：驗證收件資料、套用優惠券（選填）、檢查庫存、扣減庫存、標記購物車已結帳，回傳訂單摘要。
      * 採 @Transactional 保護，庫存不足時整筆 rollback。
+     * couponCode 為選填，若傳入則驗證優惠券並計算折扣，折扣金額由伺服器計算。
      *
      * @param request HTTP 請求（用於取得 sessionId）
-     * @param body    結帳請求 DTO（含 recipient 收件資料，@Valid 觸發巢狀驗證）
-     * @return 200 OK 訂單摘要 DTO（含收件資料、明細清單與合計金額）
+     * @param body    結帳請求 DTO（含 recipient 收件資料與選填 couponCode，@Valid 觸發巢狀驗證）
+     * @return 200 OK 訂單摘要 DTO（含收件資料、明細清單、合計金額與折扣資訊）
      */
     @PostMapping("/checkout")
     @ResponseStatus(HttpStatus.OK)
     public OrderSummary checkout(HttpServletRequest request,
                                  @RequestBody @Valid CheckoutRequest body) {
         String sessionId = SessionUtils.getSessionId(request);
-        return cartService.checkout(sessionId, body.getRecipient());
+        return cartService.checkout(sessionId, body.getRecipient(), body.getCouponCode());
     }
 }

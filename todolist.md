@@ -110,6 +110,23 @@ graph TD
 - ☑ **T22** `[Wave 6]` `依賴:T21` 建立資安相關 Skills：① 使用者層級 `security-check`（掃描 hardcoded secrets、CORS、Cookie flags、XSS/SQL injection 等 OWASP 常見漏洞）② 專案層級 `render-security`（針對本專案 Spring Boot + React + Render 組合：env 變數設定、SameSite cookie、CORS origin 驗證）
 - ☑ **T23** `[Wave 7]` `依賴:T22` 使用 UI/UX Pro Max Skill 全面優化前端視覺：導入設計系統 Token（E-commerce Luxury 暖金調色盤）、Rubik + Nunito Sans 字型、SVG 圖示取代 Emoji、NavBar 毛玻璃效果、卡片暖色陰影、成功頁綠色 SVG 勾選圖示、Toast 品牌線
 
+## 🎟 優惠券功能（Coupon Feature — feature/coupon 分支）
+
+- ☑ **C01** 更新 spec.md：新增 §13 優惠券模組（資料模型、流程圖、序列圖、ER 圖、類別圖）
+- ☑ **C02** 更新 api.md：新增優惠券驗證試算 API、可用清單 API、後台 CRUD API
+- ☑ **C03** 後端 Entity：`Coupon`、`CouponUsage`、`DiscountType` 枚舉
+- ☑ **C04** 後端 Repository：`CouponRepository`（含 findAvailableCoupons JPQL）、`CouponUsageRepository`
+- ☑ **C05** 後端 Service：`CouponService`（validateCoupon、calculateDiscount、consumeCoupon、releaseCoupon、CRUD）
+- ☑ **C06** 後端 Controller：`CouponController`（6 個端點）
+- ☑ **C07** 後端整合結帳：修改 `CheckoutRequest`（+couponCode）、`OrderSummary`（+discountAmount/finalTotal/couponCode）、`CartService.checkout()` 支援優惠券消耗
+- ☑ **C08** 後端 Schema：新增 coupon、coupon_usage 資料表；data.sql 新增 3 筆 seed 優惠券（WELCOME10、SAVE500、SUMMER20）
+- ☑ **C09** 後端測試：`CouponServiceUnitTest`（16 個測試案例，16/16 全通過）
+- ☑ **C10** 前端 API：新增 `frontend/src/api/coupon.js`（validateCoupon、getAvailableCoupons）；更新 `cart.js` checkout 支援 couponCode
+- ☑ **C11** 前端元件：`NewMemberBanner`（主頁新會員折扣碼橫幅，含複製功能）
+- ☑ **C12** 前端元件：`CouponInput`（結帳頁優惠券輸入/選擇/試算元件，折扣由 API 回傳）
+- ☑ **C13** 前端整合：`ProductListPage` 加入 NewMemberBanner；`CheckoutPage` 加入 CouponInput + 訂單金額摘要（含折扣）；`CartContext.doCheckout` 支援 couponCode 參數
+- ☑ **C14** 編譯驗證：後端 `mvn compile` 通過；前端 `npm run build`（57 模組）+ `npm run lint` 通過
+
 ---
 
 ## T22 資安實作紀錄
@@ -326,5 +343,6 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-09 | T22（新增）| 規劃資安 Skill：使用者層級 `security-check` + 專案層級 `render-security`，下次執行 |
 | 2026-06-10 | T22（完成）| 建立 `security-check`（~/.claude/skills/）通用 OWASP 掃描 Skill；建立 `render-security`（.claude/skills/）購物車專案特化 Skill；掃描發現並修正 🔴 HIGH：IDOR（updateItem/removeItem 加入 sessionId 所有權驗證）、RecipientDto phone/email 缺少 @NotBlank；修正 🟡 MEDIUM：SessionFilter 補 UUID 格式驗證；新增 2 個 IDOR 整合測試案例（13/13 全通過）|
 | 2026-06-11 | T22 Hook | 新增 `.claude/settings.json` PreToolUse hook + `scripts/security-check.js`；攔截 `gh pr create` 前執行 R1–R6 六條資安規則掃描；測試驗證：正常通過 exit 0、硬編碼密碼模擬 exit 1 攔截正確 |
+| 2026-06-14 | C01–C14（完成）| 優惠券功能完整開發：後端 Entity/Repository/Service/Controller/Schema/Seed；結帳流程整合（CheckoutRequest + OrderSummary + CartService）；前端 coupon API + NewMemberBanner + CouponInput + CheckoutPage 整合；單元測試 16/16 全通過（CouponServiceUnitTest，純 Mockito 無需 Docker）；後端 mvn compile + 前端 build + lint 全部通過。整合測試（CouponApiIntegrationTest）已寫入 14 個測試案例，需 Docker 環境方可執行。 |
 | 2026-06-13 | T23（完成）| UI/UX Pro Max 全站視覺優化：① `index.html` 加入 Rubik + Nunito Sans Google Fonts ② `index.css` 建立 14 個 CSS color token（E-commerce Luxury 暖金調色盤）+ Nunito Sans 內文字型 + `prefers-reduced-motion` 支援 ③ `NavBar.jsx` 移除 🛒 emoji → SVG 購物袋圖示；`NavBar.css` 加入 `backdrop-filter: blur(12px)` 毛玻璃、Logo 琥珀圓點裝飾、徽章改琥珀色 ④ `ProductListPage.css` 卡片 hover 改暖色陰影（amber tint）、圖片懸停放大、placeholder 改漸層暖米色、價格使用 tabular-nums ⑤ `CartPage.css` / `CheckoutPage.css` 統一圓角 18px + 卡片陰影 + Rubik 標題 + 結帳按鈕 box-shadow ⑥ `CheckoutPage.css` focus ring 改琥珀色（`--color-ring`） ⑦ `CheckoutSuccessPage.jsx` `✓` 文字改 SVG polyline 勾選圖示；`CheckoutSuccessPage.css` 圓圈背景改綠色 `#16A34A` + glow 陰影 ⑧ `Toast.css` 加左側琥珀品牌邊線；Playwright E2E class 名稱全部保留，測試相容 |
 

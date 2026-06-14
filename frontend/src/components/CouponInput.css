@@ -1,0 +1,284 @@
+/* ── 優惠券輸入元件 ─────────────────────────────────────────────────── */
+
+.coupon-input {
+  background: var(--color-surface, #fff);
+  border: 1.5px solid var(--color-border, #e8e2d9);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+/* 標題列 */
+.coupon-input__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.coupon-input__icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-amber, #b45309);
+  flex-shrink: 0;
+}
+
+.coupon-input__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-heading, #1e2330);
+  letter-spacing: 0.02em;
+}
+
+/* 輸入列（input + 按鈕） */
+.coupon-input__row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.coupon-input__field {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--color-border, #e8e2d9);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: 'Rubik', 'Courier New', monospace;
+  letter-spacing: 0.06em;
+  color: var(--color-text, #3d3530);
+  background: var(--color-bg, #faf7f2);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.coupon-input__field:focus {
+  border-color: var(--color-amber, #b45309);
+  box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.12);
+}
+
+.coupon-input__field--error {
+  border-color: #dc2626;
+}
+
+.coupon-input__field--error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.coupon-input__field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 套用按鈕 */
+.coupon-input__apply-btn {
+  padding: 10px 18px;
+  background: var(--color-amber, #b45309);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.coupon-input__apply-btn:hover:not(:disabled) {
+  background: #92400e;
+}
+
+.coupon-input__apply-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.coupon-input__apply-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 錯誤訊息 */
+.coupon-input__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #dc2626;
+}
+
+/* 可用清單切換按鈕 */
+.coupon-input__list-toggle {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: var(--color-amber, #b45309);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.coupon-input__list-toggle:hover {
+  color: #92400e;
+}
+
+.coupon-input__list-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 可用優惠券清單 */
+.coupon-input__list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  border: 1.5px solid var(--color-border, #e8e2d9);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.coupon-input__list-empty {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  color: var(--color-muted, #a09080);
+  text-align: center;
+}
+
+.coupon-input__list-item + .coupon-input__list-item {
+  border-top: 1px solid var(--color-border, #e8e2d9);
+}
+
+.coupon-input__list-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+
+.coupon-input__list-btn:hover {
+  background: var(--color-bg-hover, #f5f0e8);
+}
+
+.coupon-input__list-code {
+  font-family: 'Rubik', 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-amber, #b45309);
+}
+
+.coupon-input__list-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-heading, #1e2330);
+}
+
+.coupon-input__list-desc {
+  font-size: 0.8rem;
+  color: #6b6057;
+}
+
+.coupon-input__list-min {
+  font-size: 0.78rem;
+  color: #6b6057;
+}
+
+/* ── 折扣結果顯示 ─────────────────────────────────────────────────── */
+
+.coupon-input__result {
+  background: var(--color-bg-hover, #f5f0e8);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.coupon-input__result-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.coupon-input__result-icon {
+  width: 18px;
+  height: 18px;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.coupon-input__result-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-heading, #1e2330);
+}
+
+.coupon-input__clear-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--color-muted, #a09080);
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.12s ease;
+}
+
+.coupon-input__clear-btn:hover {
+  color: #dc2626;
+}
+
+.coupon-input__result-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.coupon-input__result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--color-text, #3d3530);
+}
+
+.coupon-input__result-row--discount {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.coupon-input__result-row--total {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-heading, #1e2330);
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border, #e8e2d9);
+  margin-top: 4px;
+}
+
+.coupon-input__result-code {
+  font-family: 'Rubik', 'Courier New', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-amber, #b45309);
+}
+
+/* 小螢幕自適應 */
+@media (max-width: 480px) {
+  .coupon-input {
+    padding: 14px 16px;
+  }
+  .coupon-input__row {
+    flex-direction: column;
+  }
+  .coupon-input__apply-btn {
+    width: 100%;
+  }
+}

@@ -137,3 +137,38 @@
   opacity: 0.35;
   cursor: not-allowed;
 }
+
+/* ── 訂單金額摘要 ─────────────────────────────────────────────────── */
+
+.checkout-order-summary {
+  background: var(--color-bg, #faf7f2);
+  border: 1.5px solid var(--color-border-light, #e8e2d9);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkout-order-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+  color: var(--color-text, #3d3530);
+}
+
+.checkout-order-summary__row--discount {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.checkout-order-summary__row--total {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-heading, #1e2330);
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1.5px solid var(--color-border-light, #e8e2d9);
+}

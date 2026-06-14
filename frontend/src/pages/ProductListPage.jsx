@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getProducts } from '../api/products'
 import { useCart } from '../context/CartContext'
+import NewMemberBanner from '../components/NewMemberBanner'
 import './ProductListPage.css'
 
 /**
@@ -130,6 +131,9 @@ export default function ProductListPage() {
   /* ── 正常渲染 ── */
   return (
     <main className="plp-container">
+      {/* 新會員折扣碼提示橫幅 */}
+      <NewMemberBanner />
+
       {/* Hero 區塊：左側大標題 + 垂直分隔線 + 右側季節特輯 */}
       <div className="plp-hero">
         <div className="plp-hero__content">
