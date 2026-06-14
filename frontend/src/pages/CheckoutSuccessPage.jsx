@@ -60,7 +60,11 @@ export default function CheckoutSuccessPage() {
     <main className="success-container">
       {/* ── 成功標題區 ── */}
       <div className="success-header">
-        <div className="success-icon" aria-hidden="true">✓</div>
+        <div className="success-icon" aria-hidden="true">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
         <h1 className="success-title">Order Confirmed!</h1>
         <p className="success-subtitle">Thank you for your purchase.</p>
       </div>

@@ -1,43 +1,46 @@
 /* ============================================================
-   CheckoutPage.css — 結帳頁（極簡白色風格）
+   CheckoutPage.css — 結帳頁
    ============================================================ */
 
 .checkout-container {
-  max-width: 520px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #ffffff;
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
+  max-width: 540px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.25rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 16px rgba(28, 25, 23, 0.05);
 }
 
 @media (max-width: 600px) {
   .checkout-container {
     margin: 1rem;
     padding: 1.25rem;
+    border-radius: var(--radius-md);
   }
 }
 
 .checkout-title {
-  font-size: 1.5rem;
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.625rem;
   font-weight: 700;
-  color: #0d0d0d;
-  margin: 0 0 1.5rem;
-  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  margin: 0 0 1.75rem;
+  letter-spacing: -0.025em;
 }
 
 .checkout-status {
   text-align: center;
   font-size: 1rem;
-  color: #6b6b6b;
+  color: var(--color-muted-fg);
   margin-top: 3rem;
 }
 
 .checkout-api-error {
-  background: #fff5f5;
-  border: 1px solid #e0b0b0;
-  border-radius: 8px;
-  color: #c0392b;
+  background: #FFF5F5;
+  border: 1px solid #FECACA;
+  border-radius: var(--radius-sm);
+  color: var(--color-destructive);
   padding: 0.75rem 1rem;
   margin-bottom: 1.25rem;
   font-size: 0.9rem;
@@ -57,69 +60,73 @@
 }
 
 .checkout-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #0d0d0d;
-  letter-spacing: 0.01em;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
 }
 
 .checkout-required {
-  color: #c0392b;
+  color: var(--color-destructive);
   margin-left: 2px;
 }
 
 .checkout-input {
   width: 100%;
-  padding: 0.65rem 0.9rem;
+  padding: 0.7rem 0.95rem;
   font-size: 0.95rem;
   font-family: inherit;
-  color: #0d0d0d;
-  background: #fff;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 10px;
+  color: var(--color-fg);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
   outline: none;
   transition: border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .checkout-input:focus {
-  border-color: #0d0d0d;
-  box-shadow: 0 0 0 3px rgba(13, 13, 13, 0.08);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-ring);
+  background: var(--color-card);
 }
 
 .checkout-input--error {
-  border-color: #c0392b;
+  border-color: var(--color-destructive);
 }
 
 .checkout-input--error:focus {
-  border-color: #c0392b;
-  box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1);
+  border-color: var(--color-destructive);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .checkout-error-msg {
   margin: 0;
   font-size: 0.8rem;
-  color: #c0392b;
+  color: var(--color-destructive);
   font-weight: 500;
 }
 
 .checkout-submit-btn {
   width: 100%;
   margin-top: 0.5rem;
-  padding: 0.8rem 1rem;
+  padding: 0.85rem 1rem;
+  font-family: 'Rubik', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
-  font-family: inherit;
-  color: #fff;
-  background: #0d0d0d;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  letter-spacing: 0.01em;
-  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.025em;
+  transition: opacity 150ms ease, transform 100ms ease, box-shadow 200ms ease;
 }
 
 .checkout-submit-btn:hover:not(:disabled) {
-  opacity: 0.82;
+  opacity: 0.85;
+  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.2);
 }
 
 .checkout-submit-btn:active:not(:disabled) {

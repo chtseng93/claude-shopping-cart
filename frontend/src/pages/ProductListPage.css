@@ -5,18 +5,18 @@
 .plp-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem 4rem;
+  padding: 0 2rem 5rem;
 }
 
 @media (max-width: 640px) {
   .plp-container {
-    padding: 0 1rem 2.5rem;
+    padding: 0 1rem 3rem;
   }
 }
 
 /* ── Hero 區塊 ── */
 .plp-hero {
-  padding: 3.5rem 0 3rem;
+  padding: 3.5rem 0 3.25rem;
   display: flex;
   align-items: flex-start;
   gap: 0;
@@ -31,9 +31,9 @@
 .plp-hero__vline {
   flex: 0 0 1px;
   align-self: stretch;
-  background-color: #c9a96e;
-  opacity: 0.55;
+  background: linear-gradient(to bottom, transparent, var(--color-accent-light) 20%, var(--color-accent-light) 80%, transparent);
   margin: 0.25rem 0;
+  opacity: 0.6;
 }
 
 /* 右側季節特輯面板 */
@@ -47,10 +47,10 @@
 
 .plp-hero__panel-label {
   font-size: 0.68rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: var(--color-accent);
   margin: 0 0 0.75rem;
 }
 
@@ -58,7 +58,7 @@
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-size: clamp(1.75rem, 3.5vw, 3rem);
   font-weight: 400;
-  color: #1a1a1a;
+  color: var(--color-fg);
   margin: 0 0 0.9rem;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -66,8 +66,8 @@
 
 .plp-hero__panel-text {
   font-size: 0.9rem;
-  color: #6b6b6b;
-  line-height: 1.65;
+  color: var(--color-muted-fg);
+  line-height: 1.7;
   margin: 0 0 1.25rem;
 }
 
@@ -76,22 +76,26 @@
   display: block;
   width: 100%;
   height: 1px;
-  background-color: #c9a96e;
-  opacity: 0.45;
+  background: linear-gradient(to right, var(--color-accent-light), transparent);
   margin-bottom: 1.25rem;
 }
 
 .plp-hero__panel-cta {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-accent);
   text-decoration: none;
   margin-bottom: 1.1rem;
-  transition: opacity 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 200ms ease, opacity 150ms ease;
 }
 
 .plp-hero__panel-cta:hover {
-  opacity: 0.55;
+  gap: 10px;
+  opacity: 0.85;
+  color: var(--color-accent);
 }
 
 /* "—— Curated for calm interiors ——" */
@@ -99,25 +103,27 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  font-size: 0.72rem;
-  color: #c9a96e;
-  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+  color: var(--color-accent-light);
+  letter-spacing: 0.08em;
   margin: 0;
+  font-style: italic;
 }
 
 .plp-hero__panel-tagline-line {
   flex: 0 0 28px;
   height: 1px;
-  background-color: #c9a96e;
-  opacity: 0.6;
+  background-color: var(--color-accent-light);
+  opacity: 0.55;
 }
 
 /* 琥珀色細線（在大標題上方） */
 .plp-hero__accent {
   display: block;
-  width: 2.25rem;
+  width: 2.5rem;
   height: 3px;
-  background-color: #c9a96e;
+  background: linear-gradient(to right, var(--color-accent), var(--color-accent-light));
+  border-radius: 2px;
   margin-bottom: 0.875rem;
 }
 
@@ -125,7 +131,7 @@
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-size: clamp(3.25rem, 8vw, 5.5rem);
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-fg);
   margin: 0 0 1.1rem;
   line-height: 1.0;
   letter-spacing: -0.025em;
@@ -133,8 +139,8 @@
 
 .plp-hero__subtitle {
   font-size: 0.95rem;
-  color: #6b6b6b;
-  line-height: 1.65;
+  color: var(--color-muted-fg);
+  line-height: 1.7;
   margin: 0;
 }
 
@@ -142,7 +148,7 @@
   .plp-hero {
     flex-direction: column;
     gap: 2rem;
-    padding: 2rem 0;
+    padding: 2rem 0 1.5rem;
   }
 
   .plp-hero__content {
@@ -162,24 +168,34 @@
 /* ── 商品 Grid ── */
 .plp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 1.5rem;
-  margin-top: 2.5rem;
+  margin-top: 2.75rem;
+}
+
+@media (max-width: 640px) {
+  .plp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.125rem;
+  }
 }
 
 /* ── 商品卡片 ── */
 .plp-card {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow 250ms ease, transform 250ms ease;
+  border: 1px solid var(--color-border-light);
+  box-shadow: 0 1px 4px rgba(28, 25, 23, 0.04);
+  transition: box-shadow 250ms ease, transform 250ms ease, border-color 250ms ease;
 }
 
 .plp-card:hover {
-  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.10);
-  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(161, 98, 7, 0.10), 0 2px 8px rgba(28, 25, 23, 0.06);
+  transform: translateY(-4px);
+  border-color: var(--color-border);
 }
 
 /* ── 圖片 ── */
@@ -188,13 +204,38 @@
   height: 220px;
   object-fit: cover;
   display: block;
+  transition: transform 400ms ease;
+}
+
+.plp-card:hover .plp-card__img {
+  transform: scale(1.03);
 }
 
 .plp-card__img-placeholder {
   width: 100%;
   height: 220px;
-  background: #ede9e2;
+  background: linear-gradient(135deg, #EDE9E2 0%, #F5F2EC 50%, #EDE9E2 100%);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plp-card__img-placeholder::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 48px;
+  background-color: var(--color-border);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  opacity: 0.35;
 }
 
 /* ── 卡片內容 ── */
@@ -206,19 +247,20 @@
 }
 
 .plp-card__name {
+  font-family: 'Rubik', sans-serif;
   font-size: 1rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: var(--color-fg);
   margin: 0 0 0.35rem;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
 }
 
 .plp-card__desc {
   font-size: 0.82rem;
-  color: #8a8a8a;
+  color: var(--color-muted-fg);
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.6;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -228,30 +270,34 @@
 /* 琥珀色短橫線（在說明文字與價格之間） */
 .plp-card__divider {
   display: block;
-  width: 2rem;
+  width: 1.75rem;
   height: 2px;
-  background-color: #c9a96e;
+  background: linear-gradient(to right, var(--color-accent), var(--color-accent-light));
+  border-radius: 1px;
   margin: 0.875rem 0 0.625rem;
   flex-shrink: 0;
 }
 
 .plp-card__price {
-  font-size: 1.05rem;
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-fg);
   margin: 0 0 0.3rem;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .plp-card__stock {
-  font-size: 0.8rem;
-  color: #4a7c5f;
+  font-size: 0.78rem;
+  color: var(--color-success);
   font-weight: 600;
   margin: 0;
+  letter-spacing: 0.01em;
 }
 
 .plp-card__stock--sold-out {
-  color: #b0b0b0;
+  color: var(--color-muted-fg);
   font-weight: 500;
 }
 
@@ -265,22 +311,23 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  background: #1a1a1a;
-  color: #fff;
-  letter-spacing: 0.02em;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  letter-spacing: 0.03em;
+  transition: opacity 150ms ease, transform 100ms ease, background-color 200ms ease, box-shadow 200ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .plp-btn:hover:not(:disabled) {
-  opacity: 0.82;
+  opacity: 0.85;
+  box-shadow: 0 4px 14px rgba(28, 25, 23, 0.2);
 }
 
 .plp-btn:active:not(:disabled) {
@@ -292,8 +339,8 @@
 }
 
 .plp-btn--sold-out {
-  background: #e0e0e0;
-  color: #9a9a9a;
+  background: var(--color-muted);
+  color: var(--color-muted-fg);
 }
 
 .plp-btn--sold-out:disabled {
@@ -301,7 +348,7 @@
 }
 
 .plp-btn--done {
-  background: #2d6a4f;
+  background: var(--color-success);
   opacity: 1;
 }
 
@@ -309,14 +356,14 @@
   opacity: 1;
 }
 
-/* ── Status ── */
+/* ── 載入 / 錯誤狀態 ── */
 .plp-status {
   text-align: center;
   font-size: 1rem;
-  color: #6b6b6b;
+  color: var(--color-muted-fg);
   margin-top: 4rem;
 }
 
 .plp-status--error {
-  color: #c0392b;
+  color: var(--color-destructive);
 }

@@ -1,11 +1,53 @@
+/* ============================================================
+   index.css — FurnitureCo. 全域樣式與設計系統 Token
+   設計方向：E-commerce Luxury（暖金 + 深棕 + 暖米白）
+   ============================================================ */
+
+/* ── 色彩 Token ── */
 :root {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.5;
+  --color-primary:      #1C1917;
+  --color-on-primary:   #FFFFFF;
+  --color-secondary:    #44403C;
+  --color-accent:       #A16207;
+  --color-accent-light: #C9A96E;
+  --color-bg:           #FAFAF9;
+  --color-fg:           #0C0A09;
+  --color-card:         #FFFFFF;
+  --color-muted:        #F5F4F0;
+  --color-muted-fg:     #78716C;
+  --color-border:       #D6D3D1;
+  --color-border-light: #E7E5E4;
+  --color-destructive:  #DC2626;
+  --color-success:      #16A34A;
+  --color-ring:         rgba(161, 98, 7, 0.35);
+
+  /* Spacing scale (4pt) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Border-radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  18px;
+  --radius-xl:  24px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  font-family: 'Nunito Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
   font-weight: 400;
+  font-size: 16px;
 
   color-scheme: light;
-  color: #1a1a1a;
-  background-color: #faf7f2;
+  color: var(--color-fg);
+  background-color: var(--color-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,45 +55,61 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Reset ── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 a {
   font-weight: 500;
-  color: #0d0d0d;
-  text-decoration: inherit;
+  color: var(--color-fg);
+  text-decoration: none;
+  transition: color 150ms ease, opacity 150ms ease;
 }
 a:hover {
-  color: #444;
+  color: var(--color-secondary);
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
-  background-color: #faf7f2;
+  min-height: 100dvh;
+  background-color: var(--color-bg);
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   margin: 0;
+  font-family: 'Rubik', 'Inter', sans-serif;
   line-height: 1.2;
+  color: var(--color-fg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
+/* ── 按鈕基礎樣式 ── */
 button {
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: none;
   padding: 0.65em 1.4em;
   font-size: 0.95em;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
+  transition: opacity 150ms ease, transform 100ms ease, background-color 150ms ease, box-shadow 150ms ease;
 }
 button:active {
   transform: scale(0.97);
 }
 button:focus-visible {
-  outline: 2px solid #0d0d0d;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* ── 減少動畫（無障礙）── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

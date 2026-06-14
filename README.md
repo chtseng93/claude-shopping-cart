@@ -1,7 +1,10 @@
 # Shopping Cart 購物車
 
 依據**Claude Code 全端專案開發實作課程**做練習，使用 **Claude Code** 搭配 **Antigravity** 開發的全端購物車專案，採 **SDD（Spec-Driven Development，規格驅動開發）** 流程：**先寫規格 → 拆解任務 → 最後實作**。
-
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-3.png)
+![alt text](image-2.png)
 ---
 
 ## 技術棧
@@ -41,6 +44,9 @@
 7. **開始實作** — 請 AI「根據 todolist.md / api.md / spec.md 開發」。
 8. **撰寫測試** — E2E 測試（Playwright）驗證完整流程。
 9. **agent-browser** - 使用 agent-browser 完整驗證本地購物流程，產出 reports/checkout-sop.md。
+10. 建立 Agent Browser Checkout Skill 本專案結帳流程功能。
+11. 使用 UI/UX Pro Max，優化介面設計。
+
 
 
 

@@ -1,33 +1,36 @@
 /* ============================================================
-   CartPage.css — 購物車頁（極簡白色風格）
+   CartPage.css — 購物車頁
    ============================================================ */
 
 .cart-page {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #ffffff;
-  border: 1px solid #e8e8e8;
-  border-radius: 14px;
+  max-width: 720px;
+  margin: 2.5rem auto;
+  padding: 2rem 2.25rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 16px rgba(28, 25, 23, 0.05);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .cart-page {
     margin: 1rem;
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem;
+    border-radius: var(--radius-md);
   }
 }
 
 .cart-title {
-  font-size: 1.5rem;
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.625rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #0d0d0d;
-  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+  color: var(--color-fg);
+  letter-spacing: -0.025em;
 }
 
 .cart-loading {
-  color: #8a8a8a;
+  color: var(--color-muted-fg);
   font-size: 1rem;
   text-align: center;
   margin-top: 3rem;
@@ -39,28 +42,30 @@
   align-items: center;
   gap: 1rem;
   margin-top: 3rem;
+  padding-bottom: 1.5rem;
 }
 
 .cart-empty-msg {
-  font-size: 1.05rem;
-  color: #6b6b6b;
+  font-size: 1rem;
+  color: var(--color-muted-fg);
 }
 
 .cart-continue-link {
   display: inline-block;
-  padding: 0.6rem 1.75rem;
-  border-radius: 10px;
-  background: #0d0d0d;
-  color: #fff;
-  font-weight: 600;
+  padding: 0.65rem 1.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
   font-size: 0.9rem;
   text-decoration: none;
-  transition: opacity 0.15s;
+  letter-spacing: 0.02em;
+  transition: opacity 150ms ease;
 }
 
 .cart-continue-link:hover {
-  opacity: 0.8;
-  color: #fff;
+  opacity: 0.82;
+  color: var(--color-on-primary);
 }
 
 /* ── 明細列表 ── */
@@ -76,13 +81,13 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border-light);
 
   opacity: 1;
-  max-height: 80px;
+  max-height: 90px;
   overflow: hidden;
-  transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
+  transition: opacity 300ms ease, max-height 300ms ease, padding 300ms ease;
 }
 
 .cart-item-row--removing {
@@ -94,9 +99,10 @@
 
 .cart-item-name {
   flex: 1;
+  font-family: 'Rubik', sans-serif;
   font-weight: 600;
   font-size: 0.95rem;
-  color: #0d0d0d;
+  color: var(--color-fg);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -105,11 +111,12 @@
 }
 
 .cart-item-unit-price {
-  width: 5rem;
+  width: 5.5rem;
   text-align: right;
-  color: #8a8a8a;
+  color: var(--color-muted-fg);
   font-size: 0.875rem;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .cart-item-qty {
@@ -127,19 +134,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1.5px solid #e0e0e0;
+  border: 1.5px solid var(--color-border);
   background-color: transparent;
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
-  color: #0d0d0d;
-  transition: background-color 0.12s, border-color 0.12s;
+  color: var(--color-fg);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
 .qty-btn:hover:not(:disabled) {
-  background-color: #0d0d0d;
-  border-color: #0d0d0d;
-  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .qty-btn:disabled {
@@ -150,47 +157,53 @@
 .qty-value {
   min-width: 1.75rem;
   text-align: center;
+  font-family: 'Rubik', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #0d0d0d;
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
 }
 
 .cart-item-subtotal {
   width: 6rem;
   text-align: right;
+  font-family: 'Rubik', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
-  color: #0d0d0d;
+  color: var(--color-fg);
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── 分隔線 ── */
 .cart-divider {
   border: none;
-  border-top: 1.5px solid #e8e8e8;
-  margin: 1rem 0;
+  border-top: 1.5px solid var(--color-border-light);
+  margin: 1.125rem 0;
 }
 
 /* ── 合計區塊 ── */
 .cart-summary {
   display: flex;
   justify-content: flex-end;
-  align-items: center;
+  align-items: baseline;
   gap: 1.25rem;
-  padding: 0.75rem 0 1.25rem;
+  padding: 0.5rem 0 1.25rem;
 }
 
 .cart-summary-label {
-  font-size: 0.95rem;
-  color: #6b6b6b;
+  font-size: 0.9rem;
+  color: var(--color-muted-fg);
   font-weight: 500;
 }
 
 .cart-summary-total {
-  font-size: 1.5rem;
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.625rem;
   font-weight: 800;
-  color: #0d0d0d;
-  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── 操作按鈕區 ── */
@@ -200,20 +213,22 @@
 }
 
 .cart-checkout-btn {
-  padding: 0.75rem 2.25rem;
+  padding: 0.8rem 2.5rem;
+  font-family: 'Rubik', sans-serif;
   font-size: 0.95rem;
   font-weight: 700;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: none;
-  background-color: #0d0d0d;
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   cursor: pointer;
-  letter-spacing: 0.01em;
-  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.025em;
+  transition: opacity 150ms ease, transform 100ms ease, box-shadow 200ms ease;
 }
 
 .cart-checkout-btn:hover:not(:disabled) {
-  opacity: 0.82;
+  opacity: 0.85;
+  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.2);
 }
 
 .cart-checkout-btn:active:not(:disabled) {
