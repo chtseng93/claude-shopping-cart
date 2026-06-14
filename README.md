@@ -46,7 +46,8 @@
 9. **agent-browser** - 使用 agent-browser 完整驗證本地購物流程，產出 reports/checkout-sop.md。
 10. 建立 Agent Browser Checkout Skill 本專案結帳流程功能。
 11. 使用 UI/UX Pro Max，優化介面設計。
-
+12. 建立 pre-commit hook，在每次 commit 前自動執行 R1–R6 六條資安規則掃描。
+13. 使用 /agents 建立背景 Agent，依照商品資料模型產生商品測試資料。
 
 
 

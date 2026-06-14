@@ -59,3 +59,114 @@ VALUES (
     'https://images.unsplash.com/photo-1606425288528-4cebbfc69de7?w=600&auto=format&fit=crop'
 )
 ON CONFLICT DO NOTHING;
+
+-- 新增商品資料（2026-06-14）
+
+-- Product 6: Linen Dining Chair
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000006',
+    'Linen Dining Chair',
+    'Natural linen seat pad, solid beech frame, stackable design. Suits any dining room aesthetic.',
+    320.00,
+    18,
+    'https://images.unsplash.com/photo-1581539250439-c96689b516dd?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 7: Marble Side Table
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000007',
+    'Marble Side Table',
+    'White Carrara marble top, brushed gold base. A refined accent piece for bedroom or lounge.',
+    670.00,
+    10,
+    'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+
+-- Product 9: Upholstered Bed Frame
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000009',
+    'Upholstered Bed Frame',
+    'Tufted headboard in dove-grey fabric, solid pine slat base. Fits queen and king mattresses.',
+    1100.00,
+    6,
+    'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 10: Floating Wall Shelf
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000010',
+    'Floating Wall Shelf',
+    'Solid ash wood, concealed bracket mounting. Ideal for displaying books, candles, and small plants.',
+    180.00,
+    25,
+    'https://images.unsplash.com/photo-1532372320572-cda25653a26d?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 11: Velvet Ottoman
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000011',
+    'Velvet Ottoman',
+    'Deep teal velvet, removable tray top, hidden storage inside. Doubles as a coffee table.',
+    420.00,
+    9,
+    'https://images.unsplash.com/photo-1550226891-ef816aed4a98?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 12: Industrial Desk Lamp
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000012',
+    'Industrial Desk Lamp',
+    'Matte black steel arm, Edison bulb included, rotary dimmer switch. Built for long work sessions.',
+    210.00,
+    20,
+    'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 13: Concrete Planter Pot
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000013',
+    'Concrete Planter Pot',
+    'Hand-cast concrete, drainage hole with bamboo tray. Works indoors or on a sheltered balcony.',
+    95.00,
+    30,
+    'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 14: Extendable Dining Table
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000014',
+    'Extendable Dining Table',
+    'White oak veneer top extends from 160 cm to 240 cm. Seats four to eight with ease.',
+    1350.00,
+    4,
+    'https://images.unsplash.com/photo-1549497538-303791108f95?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
+
+-- Product 15: Woven Storage Basket
+INSERT INTO product (id, name, description, price, stock, image_url)
+VALUES (
+    '11111111-0000-0000-0000-000000000015',
+    'Woven Storage Basket',
+    'Seagrass weave, cotton rope handles, collapsible when empty. Keeps blankets and toys in check.',
+    75.00,
+    40,
+    'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&auto=format&fit=crop'
+)
+ON CONFLICT DO NOTHING;
