@@ -597,10 +597,412 @@ classDiagram
 
 ## 12. 範圍邊界（對應 PRD）
 
-**包含**：商品瀏覽、加入購物車（合併）、數量更新（0 移除）、伺服器合計、結帳清空。
+**包含**：商品瀏覽、加入購物車（合併）、數量更新（0 移除）、伺服器合計、結帳清空、**優惠券驗證與折扣**。
 
-**不包含**：會員登入、金流串接、訂單歷史查詢、後台管理、折扣碼。
+**不包含**：會員登入、金流串接、訂單歷史查詢。
 
 ---
 
 > 後續：API 細節請見 `api.md`（RESTful 風格）。開發前請就本規格與開發者確認。
+
+---
+
+## 13. 優惠券模組（Coupon Feature）
+
+> 依據 [coupon.md](coupon.md) 需求規格撰寫。
+
+### 13.1 架構說明
+
+優惠券模組採用伺服器端折扣計算，前端僅負責送出優惠券代碼並顯示 API 回傳的折扣結果。
+折扣金額不接受客戶端傳入（金額權威在伺服器，與購物車合計一致）。
+
+| 元件 | 職責 |
+|------|------|
+| `Coupon` Entity | 儲存優惠券主檔（代碼、折扣類型、使用限制、有效期間） |
+| `CouponUsage` Entity | 記錄每次優惠券使用（與訂單對應） |
+| `CouponService` | 驗證、試算、消耗、返還邏輯 |
+| `CouponController` | 提供前端驗證試算 API 與後台管理 API |
+
+### 13.2 資料模型
+
+#### 13.2.1 Coupon（優惠券主檔）
+
+| Entity 欄位 | 資料表欄位 | Java 型別 | DB 型別 / 約束 | 說明 |
+|------|------|------|------|------|
+| `id` | `id` | UUID | UUID PK | 主鍵 |
+| `code` | `code` | String | VARCHAR(50) NOT NULL UNIQUE | 優惠券代碼（唯一，大寫英數） |
+| `name` | `name` | String | VARCHAR(255) NOT NULL | 優惠券名稱（顯示用） |
+| `discountType` | `discount_type` | DiscountType | VARCHAR(20) NOT NULL | 折扣類型：PERCENTAGE（百分比）/ FIXED（固定金額） |
+| `discountValue` | `discount_value` | BigDecimal | NUMERIC(10,2) NOT NULL CHECK > 0 | 折扣值（百分比：0~100；固定：TWD 金額） |
+| `minOrderAmount` | `min_order_amount` | BigDecimal | NUMERIC(10,2) NOT NULL DEFAULT 0 | 最低訂單金額門檻 |
+| `maxUsageCount` | `max_usage_count` | Integer | INTEGER NULL | 全局最大使用次數（NULL 表示無限制） |
+| `usageCount` | `usage_count` | Integer | INTEGER NOT NULL DEFAULT 0 | 已使用次數 |
+| `startDate` | `start_date` | Instant | TIMESTAMPTZ NOT NULL | 有效開始日期 |
+| `endDate` | `end_date` | Instant | TIMESTAMPTZ NOT NULL | 有效截止日期 |
+| `isActive` | `is_active` | Boolean | BOOLEAN NOT NULL DEFAULT true | 是否啟用 |
+| `description` | `description` | String | TEXT NULL | 優惠券說明（顯示給使用者） |
+| `createdAt` | `created_at` | Instant | TIMESTAMPTZ DEFAULT now() | 建立時間 |
+
+#### 13.2.2 CouponUsage（優惠券使用記錄）
+
+| Entity 欄位 | 資料表欄位 | Java 型別 | DB 型別 / 約束 | 說明 |
+|------|------|------|------|------|
+| `id` | `id` | UUID | UUID PK | 主鍵 |
+| `coupon` | `coupon_id` | Coupon | UUID FK NOT NULL | 對應優惠券 |
+| `cartId` | `cart_id` | UUID | UUID NOT NULL | 對應已結帳購物車（訂單） |
+| `sessionId` | `session_id` | String | VARCHAR(255) NOT NULL | 使用者 session 識別 |
+| `discountAmount` | `discount_amount` | BigDecimal | NUMERIC(10,2) NOT NULL | 實際折扣金額（伺服器計算） |
+| `usedAt` | `used_at` | Instant | TIMESTAMPTZ DEFAULT now() | 使用時間 |
+
+### 13.3 關鍵流程
+
+#### 13.3.1 優惠券驗證試算流程
+
+```mermaid
+flowchart TD
+    A[使用者輸入優惠券代碼] --> B[POST /api/coupons/validate]
+    B --> C{優惠券代碼是否存在}
+    C -- 否 --> E1[回傳 404 優惠券不存在]
+    C -- 是 --> D{isActive = true?}
+    D -- 否 --> E2[回傳 400 優惠券已停用]
+    D -- 是 --> F{是否在有效期限內}
+    F -- 否 --> E3[回傳 400 優惠券已過期]
+    F -- 是 --> G{訂單金額 >= minOrderAmount?}
+    G -- 否 --> E4[回傳 400 未達最低消費門檻]
+    G -- 是 --> H{使用次數未達上限?}
+    H -- 否 --> E5[回傳 400 優惠券使用次數已達上限]
+    H -- 是 --> I[計算折扣金額]
+    I --> J[回傳 200 折扣試算結果]
+```
+
+#### 13.3.2 訂單成立後優惠券消耗流程
+
+```mermaid
+flowchart TD
+    A[結帳 POST /api/cart/checkout] --> B{是否攜帶 couponCode?}
+    B -- 否 --> C[正常結帳，無折扣]
+    B -- 是 --> D[再次驗證優惠券]
+    D --> E{驗證通過?}
+    E -- 否 --> F[拋出例外，整筆 Rollback]
+    E -- 是 --> G[計算折扣金額]
+    G --> H[庫存扣減]
+    H --> I[建立 CouponUsage 記錄]
+    I --> J[coupon.usageCount += 1]
+    J --> K[COMMIT]
+    K --> L[回傳訂單摘要含折扣金額]
+```
+
+#### 13.3.3 付款失敗 / 訂單取消後優惠券返還流程
+
+```mermaid
+flowchart TD
+    A[訂單取消] --> B{是否有關聯 CouponUsage?}
+    B -- 否 --> C[無需處理]
+    B -- 是 --> D[coupon.usageCount -= 1]
+    D --> E[刪除 CouponUsage 記錄]
+    E --> F[返還完成]
+```
+
+### 13.4 虛擬碼
+
+```java
+// 優惠券驗證試算（不消耗，僅計算折扣金額）
+CouponValidateResponse validateCoupon(String code, BigDecimal orderAmount) {
+    Coupon coupon = couponRepo.findByCode(code)
+        .orElseThrow(() -> new NotFoundException("優惠券不存在"));
+
+    // 逐項驗證規則
+    if (!coupon.isActive()) throw new BadRequestException("優惠券已停用");
+    Instant now = Instant.now();
+    if (now.isBefore(coupon.getStartDate()) || now.isAfter(coupon.getEndDate()))
+        throw new BadRequestException("優惠券已過期");
+    if (orderAmount.compareTo(coupon.getMinOrderAmount()) < 0)
+        throw new BadRequestException("未達最低消費門檻 $" + coupon.getMinOrderAmount());
+    if (coupon.getMaxUsageCount() != null
+        && coupon.getUsageCount() >= coupon.getMaxUsageCount())
+        throw new BadRequestException("優惠券使用次數已達上限");
+
+    // 由伺服器計算折扣金額
+    BigDecimal discount = calculateDiscount(coupon, orderAmount);
+    BigDecimal finalAmount = orderAmount.subtract(discount).max(BigDecimal.ZERO);
+    return new CouponValidateResponse(coupon, discount, finalAmount);
+}
+
+// 折扣金額計算（伺服器權威）
+BigDecimal calculateDiscount(Coupon coupon, BigDecimal orderAmount) {
+    return switch (coupon.getDiscountType()) {
+        case PERCENTAGE ->
+            orderAmount.multiply(coupon.getDiscountValue())
+                       .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        case FIXED ->
+            coupon.getDiscountValue().min(orderAmount);  // 折扣不超過訂單金額
+    };
+}
+
+// 消耗優惠券（於結帳 @Transactional 內呼叫）
+void consumeCoupon(Coupon coupon, UUID cartId, String sessionId, BigDecimal discountAmount) {
+    CouponUsage usage = new CouponUsage(coupon, cartId, sessionId, discountAmount);
+    couponUsageRepo.save(usage);
+    coupon.setUsageCount(coupon.getUsageCount() + 1);  // 更新使用次數
+}
+
+// 返還優惠券（訂單取消時呼叫）
+void releaseCoupon(UUID cartId) {
+    couponUsageRepo.findByCartId(cartId).ifPresent(usage -> {
+        Coupon coupon = usage.getCoupon();
+        coupon.setUsageCount(Math.max(0, coupon.getUsageCount() - 1));
+        couponUsageRepo.delete(usage);
+    });
+}
+```
+
+### 13.5 系統脈絡圖（含優惠券模組）
+
+```mermaid
+graph LR
+    User([訪客 / 使用者])
+    subgraph System[Shopping Cart 系統]
+        FE[React 前端]
+        subgraph BE[Spring Boot API]
+            CartMod[Cart 模組]
+            CouponMod[Coupon 模組]
+        end
+        DB[(PostgreSQL)]
+    end
+    User -->|瀏覽商品 / 操作購物車 / 輸入折扣碼 / 結帳| FE
+    FE -->|REST API / JSON| CartMod
+    FE -->|POST /api/coupons/validate| CouponMod
+    CartMod -->|結帳時呼叫 consumeCoupon| CouponMod
+    CartMod -->|JPA / SQL| DB
+    CouponMod -->|JPA / SQL| DB
+```
+
+### 13.6 模組關係圖（含優惠券）
+
+```mermaid
+graph TD
+    CC[CouponController] --> CS[CouponService]
+    CS --> CR[CouponRepository]
+    CS --> CUR[CouponUsageRepository]
+    CR --> DBpg[(PostgreSQL)]
+    CUR --> DBpg
+    CartController --> CartService
+    CartService --> CS
+    CartService --> CartRepo[CartRepository]
+    CartService --> ItemRepo[CartItemRepository]
+    CartService --> ProductRepo[ProductRepository]
+    CartRepo --> DBpg
+    ItemRepo --> DBpg
+    ProductRepo --> DBpg
+```
+
+### 13.7 序列圖
+
+#### 13.7.1 結帳時優惠券驗證流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant FE as React 前端
+    participant CC as CouponController
+    participant CS as CouponService
+    participant DB as PostgreSQL
+
+    U->>FE: 輸入優惠券代碼
+    FE->>CC: POST /api/coupons/validate {code, orderAmount}
+    CC->>CS: validateCoupon(code, orderAmount)
+    CS->>DB: SELECT * FROM coupon WHERE code = ?
+    DB-->>CS: Coupon Entity
+    CS->>CS: 驗證啟用/有效期/門檻/次數
+    alt 驗證失敗
+        CS-->>CC: 拋出例外
+        CC-->>FE: 400 {message: "錯誤原因"}
+        FE-->>U: 顯示錯誤訊息
+    else 驗證通過
+        CS->>CS: 計算折扣金額（伺服器）
+        CS-->>CC: CouponValidateResponse
+        CC-->>FE: 200 {discountAmount, finalAmount}
+        FE-->>U: 顯示折扣金額
+    end
+```
+
+#### 13.7.2 訂單成立後優惠券消耗流程
+
+```mermaid
+sequenceDiagram
+    participant U as 使用者
+    participant FE as React 前端
+    participant CartC as CartController
+    participant CartS as CartService
+    participant CS as CouponService
+    participant DB as PostgreSQL
+
+    U->>FE: 送出結帳（含 couponCode）
+    FE->>CartC: POST /api/cart/checkout {recipient, couponCode}
+    CartC->>CartS: checkout(sessionId, recipient, couponCode)
+    CartS->>DB: BEGIN TRANSACTION
+    CartS->>DB: SELECT ... FOR UPDATE 各商品
+    CartS->>CartS: 驗證庫存、扣減庫存
+    alt 攜帶 couponCode
+        CartS->>CS: validateCoupon(couponCode, orderAmount)
+        CS->>DB: SELECT coupon
+        CS-->>CartS: 驗證通過 + 折扣金額
+        CartS->>CS: consumeCoupon(coupon, cartId, sessionId, discountAmount)
+        CS->>DB: INSERT coupon_usage
+        CS->>DB: UPDATE coupon.usage_count += 1
+    end
+    CartS->>DB: UPDATE cart.checked_out_at = now()
+    CartS->>DB: COMMIT
+    CartS-->>CartC: OrderSummary (含 discountAmount, finalTotal)
+    CartC-->>FE: 200 訂單摘要
+    FE-->>U: 顯示結帳成功
+```
+
+### 13.8 ER 圖（含優惠券）
+
+```mermaid
+erDiagram
+    PRODUCT ||--o{ CART_ITEM : "被加入"
+    CART ||--o{ CART_ITEM : "包含"
+    COUPON ||--o{ COUPON_USAGE : "被使用"
+    CART ||--o| COUPON_USAGE : "對應"
+
+    PRODUCT {
+        uuid id PK
+        varchar name
+        text description
+        numeric price
+        int stock
+        text image_url
+        timestamptz created_at
+    }
+    CART {
+        uuid id PK
+        varchar session_id
+        timestamptz created_at
+        timestamptz checked_out_at
+    }
+    CART_ITEM {
+        uuid id PK
+        uuid cart_id FK
+        uuid product_id FK
+        int quantity
+        numeric unit_price
+    }
+    COUPON {
+        uuid id PK
+        varchar code UK
+        varchar name
+        varchar discount_type
+        numeric discount_value
+        numeric min_order_amount
+        int max_usage_count
+        int usage_count
+        timestamptz start_date
+        timestamptz end_date
+        boolean is_active
+        text description
+        timestamptz created_at
+    }
+    COUPON_USAGE {
+        uuid id PK
+        uuid coupon_id FK
+        uuid cart_id FK
+        varchar session_id
+        numeric discount_amount
+        timestamptz used_at
+    }
+```
+
+### 13.9 類別圖（優惠券相關）
+
+```mermaid
+classDiagram
+    direction LR
+
+    class DiscountType {
+        <<enumeration>>
+        PERCENTAGE
+        FIXED
+    }
+
+    class Coupon {
+        +UUID id
+        +String code
+        +String name
+        +DiscountType discountType
+        +BigDecimal discountValue
+        +BigDecimal minOrderAmount
+        +Integer maxUsageCount
+        +Integer usageCount
+        +Instant startDate
+        +Instant endDate
+        +Boolean isActive
+        +String description
+        +Instant createdAt
+    }
+
+    class CouponUsage {
+        +UUID id
+        +Coupon coupon
+        +UUID cartId
+        +String sessionId
+        +BigDecimal discountAmount
+        +Instant usedAt
+    }
+
+    class CouponValidateRequest {
+        +String code
+        +BigDecimal orderAmount
+    }
+
+    class CouponValidateResponse {
+        +String code
+        +String name
+        +String description
+        +String discountType
+        +BigDecimal discountValue
+        +BigDecimal discountAmount
+        +BigDecimal originalAmount
+        +BigDecimal finalAmount
+    }
+
+    class CouponController {
+        +validateCoupon(CouponValidateRequest) CouponValidateResponse
+        +getAvailableCoupons() List~CouponValidateResponse~
+        +createCoupon(CouponCreateRequest) Coupon
+        +updateCoupon(UUID, CouponCreateRequest) Coupon
+        +deleteCoupon(UUID) void
+        +listAllCoupons() List~Coupon~
+    }
+
+    class CouponService {
+        +validateCoupon(code, orderAmount) CouponValidateResponse
+        +calculateDiscount(coupon, orderAmount) BigDecimal
+        +consumeCoupon(coupon, cartId, sessionId, discountAmount) void
+        +releaseCoupon(cartId) void
+        +getActiveCoupons() List~Coupon~
+    }
+
+    class CouponRepository {
+        <<interface>>
+        +findByCode(String) Optional~Coupon~
+        +findByIsActiveTrueAndStartDateBeforeAndEndDateAfter(Instant, Instant) List~Coupon~
+    }
+
+    class CouponUsageRepository {
+        <<interface>>
+        +findByCartId(UUID) Optional~CouponUsage~
+        +existsByCouponIdAndSessionId(UUID, String) boolean
+    }
+
+    Coupon --> DiscountType
+    CouponUsage --> Coupon
+    CouponController ..> CouponService
+    CouponController ..> CouponValidateRequest
+    CouponController ..> CouponValidateResponse
+    CouponService ..> CouponRepository
+    CouponService ..> CouponUsageRepository
+    CouponRepository ..> Coupon
+    CouponUsageRepository ..> CouponUsage
+```

@@ -170,3 +170,66 @@ VALUES (
     'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?w=600&auto=format&fit=crop'
 )
 ON CONFLICT DO NOTHING;
+-- ── 優惠券 Seed 資料 ───────────────────────────────────────────────────
+
+-- 優惠券 1: 新會員 10% 折扣（長期有效，無次數限制）
+INSERT INTO coupon (id, code, name, discount_type, discount_value, min_order_amount, max_usage_count, usage_count, start_date, end_date, is_active, description)
+VALUES (
+    'cccccccc-0000-0000-0000-000000000001',
+    'WELCOME10',
+    'New Member Offer',
+    'PERCENTAGE',
+    10,
+    0,
+    NULL,
+    0,
+    '2026-01-01T00:00:00Z',
+    '2026-12-31T23:59:59Z',
+    true,
+    '10% off your first order. No minimum spend.'
+)
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    description = EXCLUDED.description;
+
+-- 優惠券 2: 滿千折五百（固定金額，限量 50 份）
+INSERT INTO coupon (id, code, name, discount_type, discount_value, min_order_amount, max_usage_count, usage_count, start_date, end_date, is_active, description)
+VALUES (
+    'cccccccc-0000-0000-0000-000000000002',
+    'SAVE500',
+    'Save NT$500',
+    'FIXED',
+    500,
+    1000,
+    50,
+    0,
+    '2026-06-01T00:00:00Z',
+    '2026-09-30T23:59:59Z',
+    true,
+    'NT$500 off orders over NT$1,000. Limited to 50 uses.'
+)
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    description = EXCLUDED.description;
+
+-- 優惠券 3: 夏季 20% 折扣（有次數限制，最低消費 500）
+INSERT INTO coupon (id, code, name, discount_type, discount_value, min_order_amount, max_usage_count, usage_count, start_date, end_date, is_active, description)
+VALUES (
+    'cccccccc-0000-0000-0000-000000000003',
+    'SUMMER20',
+    'Summer Sale',
+    'PERCENTAGE',
+    20,
+    500,
+    30,
+    0,
+    '2026-07-01T00:00:00Z',
+    '2026-08-31T23:59:59Z',
+    true,
+    '20% off sitewide. Min. spend NT$500. Limited to 30 uses.'
+)
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    description = EXCLUDED.description;
+
+

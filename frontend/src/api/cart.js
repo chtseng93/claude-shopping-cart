@@ -68,22 +68,27 @@ export async function removeCartItem(itemId) {
 
 /**
  * 送出結帳，填入收件資料並完成訂單。
+ * 可選擇傳入優惠券代碼，伺服器驗證並計算折扣（折扣金額由伺服器決定，非前端計算）。
  *
  * 對應 API：POST /api/cart/checkout
- * 伺服器會驗證庫存、扣減庫存、記錄收件資料，並將購物車標記為已結帳。
+ * 伺服器會驗證庫存、扣減庫存、套用優惠券（若傳入）、記錄收件資料，並將購物車標記為已結帳。
  *
  * @param {{ name: string, phone: string, email: string, address: string }} recipient - 收件人資料
+ * @param {string|null} [couponCode=null] - 優惠券代碼（選填，null 表示不使用優惠券）
  * @returns {Promise<Object>} 訂單摘要，包含：
  *   - cartId {string}
  *   - checkedOutAt {string} ISO-8601 結帳時間
  *   - recipient {Object} 收件人資料
  *   - items {Array} 訂單明細
- *   - total {number} 訂單合計金額
+ *   - total {number} 折扣前合計金額
+ *   - discountAmount {number} 折扣金額（無優惠券時為 0）
+ *   - finalTotal {number} 折扣後實付金額
+ *   - couponCode {string|null} 套用的優惠券代碼
  * @throws {Error} 購物車為空、庫存不足或收件資料驗證失敗（400）
  */
-export async function checkout(recipient) {
+export async function checkout(recipient, couponCode = null) {
   return apiFetch('/api/cart/checkout', {
     method: 'POST',
-    body: JSON.stringify({ recipient }),
+    body: JSON.stringify({ recipient, couponCode }),
   })
 }

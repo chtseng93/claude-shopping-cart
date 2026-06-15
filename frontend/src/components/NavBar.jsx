@@ -61,7 +61,7 @@ const NavBar = forwardRef(function NavBar(_props, ref) {
      *
      * @param {string} [message='已加入購物車']
      */
-    triggerCartAnimation(message = '已加入購物車') {
+    triggerCartAnimation(message = 'Added to cart') {
       triggerAnimation()
       triggerToast(message)
     },
@@ -73,7 +73,7 @@ const NavBar = forwardRef(function NavBar(_props, ref) {
   return (
     <>
       {/* ── 導覽列主體 ── */}
-      <nav className="navbar" aria-label="主要導覽">
+      <nav className="navbar" aria-label="Main navigation">
         <div className="navbar__inner">
 
         {/* ── 左側 Logo ── */}

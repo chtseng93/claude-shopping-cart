@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import CouponInput from '../components/CouponInput'
 import './CheckoutPage.css'
 
 /**
@@ -58,6 +59,20 @@ export default function CheckoutPage() {
 
   /** @type {[string|null, Function]} API 回傳的錯誤訊息 */
   const [apiError, setApiError] = useState(null)
+
+  /**
+   * 已套用的優惠券代碼（null 表示未使用優惠券）。
+   * 結帳時傳至後端，折扣金額由伺服器計算。
+   * @type {[string|null, Function]}
+   */
+  const [appliedCouponCode, setAppliedCouponCode] = useState(null)
+
+  /**
+   * 優惠券試算結果（由 CouponInput 回呼傳入）。
+   * 僅顯示用，實際折扣由伺服器在結帳時再次計算。
+   * @type {[{discountAmount: number, finalAmount: number}|null, Function]}
+   */
+  const [couponResult, setCouponResult] = useState(null)
 
   /**
    * 購物車為空時顯示提示並在 1.5 秒後導回首頁。
@@ -180,12 +195,17 @@ export default function CheckoutPage() {
     setApiError(null)
 
     try {
-      const orderSummary = await doCheckout({
-        name: fields.name.trim(),
-        phone: fields.phone.trim(),
-        email: fields.email.trim(),
-        address: fields.address.trim(),
-      })
+      const orderSummary = await doCheckout(
+        {
+          name: fields.name.trim(),
+          phone: fields.phone.trim(),
+          email: fields.email.trim(),
+          address: fields.address.trim(),
+        },
+        // 傳入已套用的優惠券代碼（null 表示不使用）
+        // 折扣金額由伺服器計算，不傳入折扣金額
+        appliedCouponCode
+      )
       /* 成功：導向結帳成功頁，傳遞訂單摘要 */
       navigate('/checkout/success', { state: { orderSummary } })
     } catch (err) {
@@ -324,6 +344,47 @@ export default function CheckoutPage() {
               {errors.address}
             </p>
           )}
+        </div>
+
+        {/* ── 優惠券輸入區塊 ── */}
+        {cart && cart.total > 0 && (
+          <CouponInput
+            orderAmount={cart.total}
+            onCouponApplied={(info) => {
+              // 記錄已套用的代碼（伺服器結帳時再次驗證計算）
+              setAppliedCouponCode(info.code)
+              setCouponResult(info)
+              setApiError(null)
+            }}
+            onCouponCleared={() => {
+              setAppliedCouponCode(null)
+              setCouponResult(null)
+            }}
+          />
+        )}
+
+        {/* ── 訂單金額摘要（有優惠券時顯示折扣前/後） ── */}
+        <div className="checkout-order-summary">
+          <div className="checkout-order-summary__row">
+            <span>Subtotal</span>
+            <span>NT${cart ? Number(cart.total).toLocaleString() : '—'}</span>
+          </div>
+          {couponResult && (
+            <div className="checkout-order-summary__row checkout-order-summary__row--discount">
+              <span>Discount ({appliedCouponCode})</span>
+              {/* 折扣金額來自試算 API 回傳，非前端計算 */}
+              <span>- NT${Number(couponResult.discountAmount).toLocaleString()}</span>
+            </div>
+          )}
+          <div className="checkout-order-summary__row checkout-order-summary__row--total">
+            <span>Total</span>
+            <span>
+              NT${couponResult
+                ? Number(couponResult.finalAmount).toLocaleString()
+                : (cart ? Number(cart.total).toLocaleString() : '—')
+              }
+            </span>
+          </div>
         </div>
 
         {/* ── 送出按鈕 ── */}
