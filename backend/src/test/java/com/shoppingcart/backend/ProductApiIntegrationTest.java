@@ -44,14 +44,14 @@ class ProductApiIntegrationTest {
     private static final UUID P1 = UUID.fromString("11111111-0000-0000-0000-000000000001");
 
     @Test
-    @DisplayName("GET /api/products → 200 OK，回傳 5 筆 seed 商品")
+    @DisplayName("GET /api/products → 200 OK，回傳 14 筆 seed 商品")
     void getAllProducts_returnsSeedData() {
         ResponseEntity<ProductResponse[]> resp =
                 restTemplate.getForEntity("/api/products", ProductResponse[].class);
 
         assertThat(resp.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getBody()).isNotNull();
-        assertThat(resp.getBody()).hasSize(5);
+        assertThat(resp.getBody()).hasSize(14);
     }
 
     @Test
