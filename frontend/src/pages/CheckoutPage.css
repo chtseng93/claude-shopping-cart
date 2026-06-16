@@ -138,6 +138,12 @@
   cursor: not-allowed;
 }
 
+.checkout-submit-btn[aria-busy="true"] {
+  background: var(--color-success);
+  opacity: 1;
+  cursor: default;
+}
+
 /* ── 訂單金額摘要 ─────────────────────────────────────────────────── */
 
 .checkout-order-summary {

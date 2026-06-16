@@ -239,3 +239,9 @@
   opacity: 0.3;
   cursor: not-allowed;
 }
+
+.cart-checkout-btn--checking {
+  background: var(--color-success);
+  opacity: 1 !important;
+  cursor: default;
+}

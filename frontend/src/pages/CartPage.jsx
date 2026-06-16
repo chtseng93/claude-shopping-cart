@@ -165,11 +165,14 @@ export default function CartPage() {
     }
   }, [loadingMap, updateItem, setLoading])
 
+  const [checkingOut, setCheckingOut] = useState(false)
+
   /**
-   * 前往結帳頁。
+   * 短暫顯示按鈕變色後跳轉結帳頁。
    */
   const handleCheckout = useCallback(() => {
-    navigate('/checkout')
+    setCheckingOut(true)
+    setTimeout(() => navigate('/checkout'), 600)
   }, [navigate])
 
   // cart 尚未載入時顯示 loading
@@ -224,9 +227,9 @@ export default function CartPage() {
       {/* ── 前往結帳按鈕 ── */}
       <div className="cart-actions">
         <button
-          className="cart-checkout-btn"
+          className={`cart-checkout-btn${checkingOut ? ' cart-checkout-btn--checking' : ''}`}
           onClick={handleCheckout}
-          disabled={isEmpty}
+          disabled={isEmpty || checkingOut}
           aria-disabled={isEmpty}
         >
           Checkout
