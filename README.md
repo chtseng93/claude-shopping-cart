@@ -8,7 +8,7 @@
 
 > 完整購物流程：瀏覽商品 → 加入購物車 → 套用 WELCOME10 優惠券 → 結帳成功
 
-<video src="assets/demo.mp4" autoplay loop muted playsinline width="100%"></video>
+![FurnitureCo. 購物流程 Demo](assets/demo.mp4)
 
 ---
 
