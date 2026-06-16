@@ -1,6 +1,6 @@
 # Shopping Cart 購物車
 
-<sub>依據 **Claude Code 全端專案開發實作課程** 做練習，使用 Claude Code 搭配 Antigravity 開發的全端購物車專案，採 Spec-Driven Development 流程：先寫規格 → 拆解任務 → 最後實作，並實作 Harness Engineering。</sub>
+<small>依據 **Claude Code 全端專案開發實作課程** 做練習，使用 Claude Code 搭配 Antigravity 開發的全端購物車專案，採 Spec-Driven Development 流程：先寫規格 → 拆解任務 → 最後實作，並實作 Harness Engineering。</small>
 
 ---
 
