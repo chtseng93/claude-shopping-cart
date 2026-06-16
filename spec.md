@@ -597,13 +597,79 @@ classDiagram
 
 ## 12. 範圍邊界（對應 PRD）
 
-**包含**：商品瀏覽、加入購物車（合併）、數量更新（0 移除）、伺服器合計、結帳清空、**優惠券驗證與折扣**。
+**包含**：商品瀏覽、加入購物車（合併）、數量更新（0 移除）、伺服器合計、結帳清空、**優惠券驗證與折扣**、**廢棄購物車排程清理**。
 
 **不包含**：會員登入、金流串接、訂單歷史查詢。
 
 ---
 
 > 後續：API 細節請見 `api.md`（RESTful 風格）。開發前請就本規格與開發者確認。
+
+---
+
+## 14. 廢棄購物車清理機制
+
+### 14.1 背景與問題
+
+訪客以 `SESSION_ID` cookie 識別，每次新 session 皆可能建立新購物車。  
+未結帳的購物車（`checked_out_at IS NULL`）長期累積會造成 `cart` 與 `cart_item` 資料表持續膨脹，形成孤兒紀錄。
+
+### 14.2 設計決策
+
+| 方案 | 說明 | 選用 |
+|------|------|------|
+| **排程定期清除** | `@Scheduled` 每天定時刪除超過 N 天的廢棄購物車 | ✅ 本專案採用 |
+| PostgreSQL TTL 分區 | 按建立時間分區，舊分區整批 DROP | 設定複雜，不適合小規模 |
+| 加入購物車時清舊資料 | 新增時觸發清理同 session 舊車 | 只清同 session，無法處理跨 session 孤兒 |
+
+### 14.3 清理規則
+
+- **觸發時機**：每天凌晨 3 點（`cron = "0 0 3 * * *"`）
+- **廢棄判定**：`checked_out_at IS NULL` 且 `created_at < 當前時間 - 30 天`
+- **刪除行為**：透過 `Cart` entity 的 `cascade = ALL, orphanRemoval = true`，刪除 `Cart` 時所屬 `CartItem` 一併刪除
+
+### 14.4 關鍵流程
+
+```mermaid
+flowchart TD
+    A[排程觸發 凌晨 3 點] --> B[查詢 created_at 早於 30 天前\n且 checked_out_at IS NULL 的購物車]
+    B --> C{有廢棄購物車?}
+    C -- 否 --> D[記錄 log：無需清理]
+    C -- 是 --> E[deleteAll 廢棄購物車\nCascade 連帶刪除 CartItem]
+    E --> F[記錄 log：清除 N 筆]
+```
+
+### 14.5 模組位置
+
+| 元件 | 職責 |
+|------|------|
+| `CartCleanupService` | 排程清理邏輯，`@Scheduled` + `@Transactional` |
+| `CartRepository.findByCheckedOutAtIsNullAndCreatedAtBefore()` | 查詢廢棄購物車 |
+| `BackendApplication` | `@EnableScheduling` 啟用排程功能 |
+
+### 14.6 序列圖
+
+```mermaid
+sequenceDiagram
+    participant Scheduler as Spring Scheduler
+    participant CS as CartCleanupService
+    participant Repo as CartRepository
+    participant DB as PostgreSQL
+
+    Scheduler->>CS: 凌晨 3 點觸發 purgeAbandonedCarts()
+    CS->>Repo: findByCheckedOutAtIsNullAndCreatedAtBefore(now - 30d)
+    Repo->>DB: SELECT * FROM cart WHERE checked_out_at IS NULL AND created_at < ?
+    DB-->>Repo: 廢棄購物車清單
+    Repo-->>CS: List&lt;Cart&gt;
+    alt 清單為空
+        CS->>CS: log.info("無廢棄購物車需清理")
+    else 有廢棄購物車
+        CS->>Repo: deleteAll(abandoned)
+        Repo->>DB: DELETE FROM cart_item WHERE cart_id IN (...)
+        Repo->>DB: DELETE FROM cart WHERE id IN (...)
+        CS->>CS: log.info("已清除 N 筆廢棄購物車")
+    end
+```
 
 ---
 

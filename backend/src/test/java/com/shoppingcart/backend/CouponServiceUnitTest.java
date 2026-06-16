@@ -194,14 +194,15 @@ class CouponServiceUnitTest {
     // ── 測試 9：百分比折扣計算精度（四捨五入至小數 2 位） ─────────────────
 
     @Test
-    @DisplayName("百分比折扣四捨五入 — $1000 × 10% = $100.00")
+    @DisplayName("百分比折扣四捨五入 — $100 × 33.33% = $33.33")
     void calculateDiscount_percentage_roundsHalfUp() {
         // 1/3 折扣：$100 × 33.33% = $33.33
         percentageCoupon.setDiscountValue(new BigDecimal("33.33"));
+        when(couponRepository.findByCode("PTEST10")).thenReturn(Optional.of(percentageCoupon));
 
-        BigDecimal discount = couponService.calculateDiscount(percentageCoupon, new BigDecimal("100.00"));
+        CouponValidateResponse result = couponService.validateCoupon("PTEST10", new BigDecimal("100.00"));
 
-        assertThat(discount).isEqualByComparingTo(new BigDecimal("33.33"));
+        assertThat(result.getDiscountAmount()).isEqualByComparingTo(new BigDecimal("33.33"));
     }
 
     // ── 測試 10：固定折扣不超過訂單金額 ──────────────────────────────────
@@ -209,14 +210,14 @@ class CouponServiceUnitTest {
     @Test
     @DisplayName("固定折扣不超過訂單金額 — 訂單 $300 折 $500 → 折扣僅 $300")
     void calculateDiscount_fixed_doesNotExceedOrderAmount() {
-        // fixedCoupon 折扣 $500，但訂單只有 $300
-        // minOrderAmount 設為 0 避免門檻驗證干擾
+        // fixedCoupon 折扣 $500，但訂單只有 $300；minOrderAmount 設為 0 避免門檻驗證干擾
         fixedCoupon.setMinOrderAmount(BigDecimal.ZERO);
+        when(couponRepository.findByCode("FIXED500")).thenReturn(Optional.of(fixedCoupon));
 
-        BigDecimal discount = couponService.calculateDiscount(fixedCoupon, new BigDecimal("300.00"));
+        CouponValidateResponse result = couponService.validateCoupon("FIXED500", new BigDecimal("300.00"));
 
         // 折扣取最小值（300 < 500）
-        assertThat(discount).isEqualByComparingTo(new BigDecimal("300.00"));
+        assertThat(result.getDiscountAmount()).isEqualByComparingTo(new BigDecimal("300.00"));
     }
 
     // ── 測試 11：代碼大小寫不敏感 ────────────────────────────────────────
@@ -250,15 +251,13 @@ class CouponServiceUnitTest {
     // ── 測試 13：consumeCoupon 遞增 usageCount ───────────────────────────
 
     @Test
-    @DisplayName("consumeCoupon — 使用次數由 0 遞增至 1，使用記錄儲存")
+    @DisplayName("applyCoupon — 使用次數由 0 遞增至 1，使用記錄儲存")
     void consumeCoupon_incrementsUsageCount() {
         assertThat(percentageCoupon.getUsageCount()).isEqualTo(0);
+        when(couponRepository.findByCode("PTEST10")).thenReturn(Optional.of(percentageCoupon));
 
-        couponService.consumeCoupon(
-                percentageCoupon,
-                UUID.randomUUID(),
-                "test-session-id",
-                new BigDecimal("100.00"));
+        couponService.applyCoupon("PTEST10", new BigDecimal("1000.00"),
+                UUID.randomUUID(), "test-session-id");
 
         // 驗證 usageCount 已遞增
         assertThat(percentageCoupon.getUsageCount()).isEqualTo(1);

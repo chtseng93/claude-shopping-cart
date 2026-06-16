@@ -38,16 +38,6 @@ public class CheckoutRequest {
         this.couponCode = couponCode;
     }
 
-    /**
-     * 不帶優惠券的建構子（向後相容）。
-     *
-     * @param recipient 收件人資料 DTO
-     */
-    public CheckoutRequest(RecipientDto recipient) {
-        this.recipient = recipient;
-        this.couponCode = null;
-    }
-
     // ── Getters / Setters ────────────────────────────────────────────────
 
     /** 取得收件人資料 */

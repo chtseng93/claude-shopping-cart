@@ -4,6 +4,8 @@ import com.shoppingcart.backend.entity.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +24,13 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
      * @return 尚未結帳的購物車（若存在）
      */
     Optional<Cart> findBySessionIdAndCheckedOutAtIsNull(String sessionId);
+
+    /**
+     * 查詢所有建立時間早於指定時間點、且尚未結帳的廢棄購物車。
+     * 供排程清理任務使用，以避免長期累積孤兒紀錄。
+     *
+     * @param cutoff 時間截止點（早於此時間建立的未結帳購物車視為廢棄）
+     * @return 符合條件的廢棄購物車清單
+     */
+    List<Cart> findByCheckedOutAtIsNullAndCreatedAtBefore(Instant cutoff);
 }

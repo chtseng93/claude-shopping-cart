@@ -380,7 +380,7 @@ class CouponApiIntegrationTest {
     void checkout_withoutCoupon_noDiscount() {
         String sessionId = addItemAndGetSession(P1, 1);
 
-        CheckoutRequest checkoutReq = new CheckoutRequest(VALID_RECIPIENT);
+        CheckoutRequest checkoutReq = new CheckoutRequest(VALID_RECIPIENT, null);
         ResponseEntity<OrderSummary> response = restTemplate.exchange(
                 "/api/cart/checkout",
                 HttpMethod.POST,

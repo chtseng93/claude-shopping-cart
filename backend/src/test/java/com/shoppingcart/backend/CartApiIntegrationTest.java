@@ -226,7 +226,7 @@ class CartApiIntegrationTest {
      * @return OrderSummary 的 ResponseEntity
      */
     private ResponseEntity<OrderSummary> checkout(String sessionId, RecipientDto recipient) {
-        CheckoutRequest body = new CheckoutRequest(recipient);
+        CheckoutRequest body = new CheckoutRequest(recipient, null);
         return restTemplate.exchange(
                 "/api/cart/checkout",
                 HttpMethod.POST,
@@ -429,7 +429,7 @@ class CartApiIntegrationTest {
         ResponseEntity<String> resp = restTemplate.exchange(
                 "/api/cart/checkout",
                 HttpMethod.POST,
-                new HttpEntity<>(new CheckoutRequest(VALID_RECIPIENT), headersWithSession(sessionId)),
+                new HttpEntity<>(new CheckoutRequest(VALID_RECIPIENT, null), headersWithSession(sessionId)),
                 String.class
         );
 
@@ -453,7 +453,7 @@ class CartApiIntegrationTest {
         ResponseEntity<String> resp = restTemplate.exchange(
                 "/api/cart/checkout",
                 HttpMethod.POST,
-                new HttpEntity<>(new CheckoutRequest(VALID_RECIPIENT), headersWithSession(sessionId)),
+                new HttpEntity<>(new CheckoutRequest(VALID_RECIPIENT, null), headersWithSession(sessionId)),
                 String.class
         );
 

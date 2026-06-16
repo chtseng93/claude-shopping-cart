@@ -6,14 +6,12 @@ import com.shoppingcart.backend.dto.OrderSummary;
 import com.shoppingcart.backend.dto.RecipientDto;
 import com.shoppingcart.backend.entity.Cart;
 import com.shoppingcart.backend.entity.CartItem;
-import com.shoppingcart.backend.entity.Coupon;
 import com.shoppingcart.backend.entity.Product;
 import com.shoppingcart.backend.exception.BadRequestException;
 import com.shoppingcart.backend.exception.InsufficientStockException;
 import com.shoppingcart.backend.exception.NotFoundException;
 import com.shoppingcart.backend.repository.CartItemRepository;
 import com.shoppingcart.backend.repository.CartRepository;
-import com.shoppingcart.backend.repository.CouponRepository;
 import com.shoppingcart.backend.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +45,6 @@ public class CartService {
     /** 商品資料存取層（含悲觀鎖查詢） */
     private final ProductRepository productRepository;
 
-    /** 優惠券資料存取層（結帳時查詢優惠券） */
-    private final CouponRepository couponRepository;
-
     /** 優惠券服務（結帳時驗證、計算折扣、消耗優惠券） */
     private final CouponService couponService;
 
@@ -59,18 +54,15 @@ public class CartService {
      * @param cartRepository     購物車 Repository
      * @param cartItemRepository 購物車明細 Repository
      * @param productRepository  商品 Repository
-     * @param couponRepository   優惠券 Repository
-     * @param couponService      優惠券服務（驗證/計算/消耗）
+     * @param couponService      優惠券服務
      */
     public CartService(CartRepository cartRepository,
                        CartItemRepository cartItemRepository,
                        ProductRepository productRepository,
-                       CouponRepository couponRepository,
                        CouponService couponService) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.productRepository = productRepository;
-        this.couponRepository = couponRepository;
         this.couponService = couponService;
     }
 
@@ -152,10 +144,7 @@ public class CartService {
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("購物車明細不存在"));
 
-        // 驗證明細屬於當前 session（防止 IDOR：他人無法修改其他 session 的購物車）
-        if (!item.getCart().getSessionId().equals(sessionId)) {
-            throw new NotFoundException("購物車明細不存在");
-        }
+        assertItemOwnership(item, sessionId);
 
         Cart cart = item.getCart();
 
@@ -188,10 +177,7 @@ public class CartService {
         CartItem item = cartItemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("購物車明細不存在"));
 
-        // 驗證明細屬於當前 session（防止 IDOR：他人無法刪除其他 session 的購物車明細）
-        if (!item.getCart().getSessionId().equals(sessionId)) {
-            throw new NotFoundException("購物車明細不存在");
-        }
+        assertItemOwnership(item, sessionId);
 
         Cart cart = item.getCart();
 
@@ -266,21 +252,9 @@ public class CartService {
         String appliedCouponCode = null;               // 預設無套用優惠券
 
         if (couponCode != null && !couponCode.isBlank()) {
-            // 查詢優惠券（代碼轉大寫）
-            String upperCode = couponCode.trim().toUpperCase();
-            Coupon coupon = couponRepository.findByCode(upperCode)
-                    .orElseThrow(() -> new NotFoundException("優惠券代碼不存在：" + upperCode));
-
-            // 驗證優惠券規則（結帳時再次驗證，確保資料一致性）
-            couponService.validateCouponRules(coupon, total);
-
-            // 計算折扣金額（伺服器權威）
-            discountAmount = couponService.calculateDiscount(coupon, total);
-
-            // 正式消耗優惠券：建立使用記錄、遞增次數（須在同一 @Transactional 內）
-            couponService.consumeCoupon(coupon, cart.getId(), sessionId, discountAmount);
-
-            appliedCouponCode = upperCode;
+            // 委派 CouponService 處理：查詢 → 驗證 → 計算折扣 → 消耗（須在同一 @Transactional 內）
+            appliedCouponCode = couponCode.trim().toUpperCase();
+            discountAmount = couponService.applyCoupon(couponCode, total, cart.getId(), sessionId);
         }
 
         // 步驟 7：標記購物車已結帳（checkedOutAt = now()）
@@ -295,19 +269,20 @@ public class CartService {
                                 total, discountAmount, finalTotal, appliedCouponCode);
     }
 
-    /**
-     * 結帳（向後相容的重載方法，不使用優惠券）。
-     *
-     * @param sessionId 訪客 session 識別碼
-     * @param recipient 收件人資料
-     * @return 訂單摘要 DTO（無折扣）
-     */
-    @Transactional
-    public OrderSummary checkout(String sessionId, RecipientDto recipient) {
-        return checkout(sessionId, recipient, null);
-    }
-
     // ── 私有輔助方法 ──────────────────────────────────────────────────────
+
+    /**
+     * 驗證購物車明細屬於當前 session，防止 IDOR 攻擊。
+     *
+     * @param item      購物車明細
+     * @param sessionId 當前訪客 session 識別碼
+     * @throws NotFoundException 明細不屬於當前 session 時拋出（不洩露真實原因）
+     */
+    private void assertItemOwnership(CartItem item, String sessionId) {
+        if (!item.getCart().getSessionId().equals(sessionId)) {
+            throw new NotFoundException("購物車明細不存在");
+        }
+    }
 
     /**
      * 建立購物車回應 DTO，subtotal 與 total 一律由伺服器計算（金額權威原則）。

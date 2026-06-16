@@ -57,6 +57,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## 測試
 
 - 任務完成前都須完成測試，測試完畢才能繼續下一任務
+- PostToolUse hook 執行測試失敗時，**不需詢問使用者**，直接分析錯誤訊息、修正程式碼並重新觸發測試，持續循環直到測試通過（最多重試 3 次，超過則回報錯誤請使用者介入）
 
 ## 任務啟動協議（強制）
 

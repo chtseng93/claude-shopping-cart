@@ -52,14 +52,7 @@ public class OrderSummary {
      */
     public OrderSummary(UUID cartId, Instant checkedOutAt, RecipientDto recipient,
                         List<ItemDto> items, BigDecimal total) {
-        this.cartId = cartId;
-        this.checkedOutAt = checkedOutAt;
-        this.recipient = recipient;
-        this.items = items;
-        this.total = total;
-        this.discountAmount = BigDecimal.ZERO;
-        this.finalTotal = total;
-        this.couponCode = null;
+        this(cartId, checkedOutAt, recipient, items, total, BigDecimal.ZERO, total, null);
     }
 
     /**
