@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Check } from 'lucide-react'
 import { getProducts } from '../api/products'
 import { useCart } from '../context/CartContext'
 import NewMemberBanner from '../components/NewMemberBanner'
@@ -96,20 +97,6 @@ export default function ProductListPage() {
     }
   }
 
-  /**
-   * 根據商品庫存與按鈕狀態，決定按鈕文字。
-   *
-   * @param {Object} product - 商品物件
-   * @returns {string} 按鈕文字
-   */
-  function getButtonLabel(product) {
-    if (product.stock === 0) return 'Sold Out'
-    const state = addingMap[product.id]
-    if (state === 'loading') return 'Adding...'
-    if (state === 'done') return '✓ Added'
-    return 'Add to Cart'
-  }
-
   /* ── 頁面初始載入中 ── */
   if (loading) {
     return (
@@ -189,29 +176,43 @@ export default function ProductListPage() {
                 <p className="plp-card__price">
                   NT${Number(product.price).toLocaleString()}
                 </p>
-                <p className={`plp-card__stock ${isSoldOut ? 'plp-card__stock--sold-out' : ''}`}>
-                  {isSoldOut ? 'Sold Out' : `In Stock: ${product.stock}`}
-                </p>
-              </div>
-
-              <div className="plp-card__footer">
-                <button
-                  type="button"
-                  className={`plp-btn ${isSoldOut ? 'plp-btn--sold-out' : ''} ${btnState === 'done' ? 'plp-btn--done' : ''}`}
-                  disabled={isDisabled}
-                  onClick={() => handleAddToCart(product.id)}
-                  aria-label={isSoldOut ? `${product.name} — Sold Out` : `Add ${product.name} to cart`}
-                >
-                  {/* 購物車圖示：僅在正常狀態顯示 */}
-                  {!isSoldOut && !btnState && (
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <circle cx="9" cy="21" r="1"/>
-                      <circle cx="20" cy="21" r="1"/>
-                      <path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.98-1.69l1.6-9.31H6"/>
-                    </svg>
-                  )}
-                  {getButtonLabel(product)}
-                </button>
+                {/* stock 文字與按鈕同行 */}
+                <div className="plp-card__bottom-row">
+                  <p className={`plp-card__stock ${isSoldOut ? 'plp-card__stock--sold-out' : ''}`}>
+                    {isSoldOut ? 'Sold Out' : `In Stock: ${product.stock}`}
+                  </p>
+                  <button
+                    type="button"
+                    className={[
+                      'plp-btn',
+                      isSoldOut ? 'plp-btn--sold-out' : '',
+                      btnState === 'loading' ? 'plp-btn--loading' : '',
+                      btnState === 'done' ? 'plp-btn--done' : '',
+                    ].filter(Boolean).join(' ')}
+                    disabled={isDisabled}
+                    onClick={() => handleAddToCart(product.id)}
+                    aria-label={isSoldOut ? `${product.name} — Sold Out` : `Add ${product.name} to cart`}
+                  >
+                    {btnState === 'done' && (
+                      <Check size={18} strokeWidth={2.5} aria-hidden="true" />
+                    )}
+                    {btnState === 'loading' && (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="plp-btn__spinner">
+                        <circle cx="12" cy="12" r="10" strokeOpacity="0.2"/>
+                        <path d="M12 2a10 10 0 0 1 10 10"/>
+                      </svg>
+                    )}
+                    {!btnState && (
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <circle cx="8" cy="21" r="1"/>
+                        <circle cx="19" cy="21" r="1"/>
+                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 002 1.58h9.78a2 2 0 001.95-1.57L22 7H7"/>
+                        <line x1="13.5" y1="8" x2="13.5" y2="14"/>
+                        <line x1="10.5" y1="11" x2="16.5" y2="11"/>
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
             </article>
           )

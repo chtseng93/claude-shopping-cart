@@ -240,7 +240,7 @@
 
 /* ── 卡片內容 ── */
 .plp-card__body {
-  padding: 1.25rem 1.25rem 0;
+  padding: 1.25rem;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -301,59 +301,76 @@
   font-weight: 500;
 }
 
-/* ── 卡片底部（按鈕區）── */
-.plp-card__footer {
-  padding: 1rem 1.25rem 1.25rem;
+/* ── stock 文字 + 按鈕同行 ── */
+.plp-card__bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.5rem;
 }
 
-/* ── 加入購物車按鈕 ── */
+/* ── 加入購物車按鈕（圓形圖示）── */
 .plp-btn {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  border: none;
-  border-radius: var(--radius-sm);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: #B5B0AB;
   cursor: pointer;
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  letter-spacing: 0.03em;
-  transition: opacity 150ms ease, transform 100ms ease, background-color 200ms ease, box-shadow 200ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  flex-shrink: 0;
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 100ms ease, box-shadow 200ms ease;
 }
 
 .plp-btn:hover:not(:disabled) {
-  opacity: 0.85;
-  box-shadow: 0 4px 14px rgba(28, 25, 23, 0.2);
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-light);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(201, 169, 110, 0.35);
 }
 
 .plp-btn:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.92);
 }
 
 .plp-btn:disabled {
   cursor: not-allowed;
 }
 
+/* 售完：圓圈變灰、半透明 */
 .plp-btn--sold-out {
-  background: var(--color-muted);
+  border-color: var(--color-muted-fg);
   color: var(--color-muted-fg);
+  opacity: 0.45;
 }
 
-.plp-btn--sold-out:disabled {
-  opacity: 1;
-}
-
+/* 加入成功：綠色填滿 */
 .plp-btn--done {
+  border-color: var(--color-success);
   background: var(--color-success);
-  opacity: 1;
+  color: #fff;
 }
 
 .plp-btn--done:disabled {
   opacity: 1;
+}
+
+/* 載入中：淡化 + spinner 旋轉 */
+.plp-btn--loading {
+  opacity: 0.6;
+}
+
+@keyframes plp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.plp-btn__spinner {
+  animation: plp-spin 0.75s linear infinite;
 }
 
 /* ── 載入 / 錯誤狀態 ── */
