@@ -41,7 +41,7 @@
   padding: 4px 14px;
   font-size: 1rem;
   font-weight: 700;
-  font-family: 'Rubik', 'Courier New', monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.08em;
   cursor: pointer;
   transition: background 0.15s ease, transform 0.1s ease;

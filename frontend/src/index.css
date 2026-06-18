@@ -3,44 +3,68 @@
    設計方向：E-commerce Luxury（暖金 + 深棕 + 暖米白）
    ============================================================ */
 
-/* ── 色彩 Token ── */
+/* ── 設計 Token ── */
 :root {
+  /* 品牌色 */
   --color-primary:      #1C1917;
   --color-on-primary:   #FFFFFF;
   --color-secondary:    #44403C;
   --color-accent:       #A16207;
   --color-accent-light: #C9A96E;
+
+  /* 背景與表面 */
   --color-bg:           #FAFAF9;
   --color-fg:           #0C0A09;
-  --color-card:         #FFFFFF;
+  --color-card:         oklch(99% 0.006 75); /* H03: 微暖白，消除純白 surface */
   --color-muted:        #F5F4F0;
   --color-muted-fg:     #78716C;
+
+  /* 邊框 */
   --color-border:       #D6D3D1;
   --color-border-light: #E7E5E4;
+
+  /* 語意色 */
   --color-destructive:  #DC2626;
   --color-success:      #16A34A;
+  --color-error-bg:     #FFF5F5;   /* H01: 錯誤狀態背景 */
+  --color-error-border: #FECACA;  /* H01: 錯誤狀態邊框 */
   --color-ring:         rgba(161, 98, 7, 0.35);
 
+  /* 字型 — H02 */
+  --font-display: 'Rubik', 'Inter', sans-serif;
+  --font-serif:   'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body:    'Nunito Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'Rubik', 'Courier New', monospace;
+
+  /* 緩動 — H06 */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+
+  /* 陰影 — H07 */
+  --shadow-sm:    0 2px 16px rgba(28, 25, 23, 0.05);
+  --shadow-card:  0 1px 4px rgba(28, 25, 23, 0.04);
+  --shadow-hover: 0 8px 32px rgba(161, 98, 7, 0.10), 0 2px 8px rgba(28, 25, 23, 0.06);
+
   /* Spacing scale (4pt) */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-8: 32px;
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
   --sp-10: 40px;
   --sp-12: 48px;
 
   /* Border-radius */
-  --radius-sm:  8px;
-  --radius-md:  12px;
-  --radius-lg:  18px;
-  --radius-xl:  24px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
   --radius-full: 9999px;
 
-  /* Typography */
-  font-family: 'Nunito Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* 基礎排版 */
+  font-family: var(--font-body);
   line-height: 1.6;
   font-weight: 400;
   font-size: 16px;
@@ -79,7 +103,7 @@ body {
 
 h1, h2, h3, h4 {
   margin: 0;
-  font-family: 'Rubik', 'Inter', sans-serif;
+  font-family: var(--font-display);
   line-height: 1.2;
   color: var(--color-fg);
   font-weight: 600;

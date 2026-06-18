@@ -27,7 +27,7 @@
 
 /* ---- Logo ---- */
 .navbar__logo {
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-fg);
@@ -113,7 +113,7 @@
 }
 
 .navbar__badge--bounce {
-  animation: badge-bounce 300ms ease-out;
+  animation: badge-bounce 300ms var(--ease-out);
 }
 
 @keyframes badge-bounce {
@@ -125,7 +125,7 @@
 
 .navbar__cart-icon--shake {
   display: inline-flex;
-  animation: cart-shake 300ms ease-in-out;
+  animation: cart-shake 300ms linear;
 }
 
 @keyframes cart-shake {

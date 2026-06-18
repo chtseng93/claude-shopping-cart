@@ -9,7 +9,7 @@
   background: var(--color-card);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
-  box-shadow: 0 2px 16px rgba(28, 25, 23, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 600px) {
@@ -21,7 +21,7 @@
 }
 
 .checkout-title {
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.625rem;
   font-weight: 700;
   color: var(--color-fg);
@@ -37,8 +37,8 @@
 }
 
 .checkout-api-error {
-  background: #FFF5F5;
-  border: 1px solid #FECACA;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
   border-radius: var(--radius-sm);
   color: var(--color-destructive);
   padding: 0.75rem 1rem;
@@ -60,7 +60,6 @@
 }
 
 .checkout-label {
-  font-size: 0.85rem;
   font-weight: 700;
   color: var(--color-secondary);
   letter-spacing: 0.02em;
@@ -112,7 +111,7 @@
   width: 100%;
   margin-top: 0.5rem;
   padding: 0.85rem 1rem;
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--color-on-primary);
@@ -147,14 +146,14 @@
 /* ── 訂單金額摘要 ─────────────────────────────────────────────────── */
 
 .checkout-order-summary {
-  background: var(--color-bg, #faf7f2);
-  border: 1.5px solid var(--color-border-light, #e8e2d9);
-  border-radius: 12px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border-light);
+  border-radius: var(--radius-md);
   padding: 14px 18px;
-  margin-bottom: 16px;
+  margin-bottom: var(--sp-4);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .checkout-order-summary__row {
@@ -162,19 +161,19 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.92rem;
-  color: var(--color-text, #3d3530);
+  color: var(--color-fg);
 }
 
 .checkout-order-summary__row--discount {
-  color: #16a34a;
+  color: var(--color-success);
   font-weight: 500;
 }
 
 .checkout-order-summary__row--total {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--color-heading, #1e2330);
-  padding-top: 8px;
+  color: var(--color-fg);
+  padding-top: var(--sp-2);
   margin-top: 2px;
-  border-top: 1.5px solid var(--color-border-light, #e8e2d9);
+  border-top: 1.5px solid var(--color-border-light);
 }

@@ -55,7 +55,7 @@
 }
 
 .plp-hero__panel-title {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.75rem, 3.5vw, 3rem);
   font-weight: 400;
   color: var(--color-fg);
@@ -128,7 +128,7 @@
 }
 
 .plp-hero__title {
-  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-family: var(--font-serif);
   font-size: clamp(3.25rem, 8vw, 5.5rem);
   font-weight: 700;
   color: var(--color-fg);
@@ -188,13 +188,12 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--color-border-light);
-  box-shadow: 0 1px 4px rgba(28, 25, 23, 0.04);
-  transition: box-shadow 250ms ease, transform 250ms ease, border-color 250ms ease;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 250ms ease, border-color 250ms ease;
 }
 
 .plp-card:hover {
-  box-shadow: 0 8px 32px rgba(161, 98, 7, 0.10), 0 2px 8px rgba(28, 25, 23, 0.06);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
   border-color: var(--color-border);
 }
 
@@ -247,7 +246,7 @@
 }
 
 .plp-card__name {
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-fg);
@@ -279,7 +278,7 @@
 }
 
 .plp-card__price {
-  font-family: 'Rubik', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-fg);

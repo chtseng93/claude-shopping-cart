@@ -109,7 +109,22 @@ graph TD
 - ☑ **T21** `[Wave 5]` `依賴:T20` 建立 Claude Code Skills：`skill-creator`（引導建立新 skill）與 `agent-browser`（CLI 操作指南，含 React SPA 注意事項），安裝至使用者層級 `~/.claude/skills/`；專案層級新增 `agent-browser-checkout`（本專案結帳流程）
 - ☑ **T22** `[Wave 6]` `依賴:T21` 建立資安相關 Skills：① 使用者層級 `security-check`（掃描 hardcoded secrets、CORS、Cookie flags、XSS/SQL injection 等 OWASP 常見漏洞）② 專案層級 `render-security`（針對本專案 Spring Boot + React + Render 組合：env 變數設定、SameSite cookie、CORS origin 驗證）
 - ☑ **T23** `[Wave 7]` `依賴:T22` 使用 UI/UX Pro Max Skill 全面優化前端視覺：導入設計系統 Token（E-commerce Luxury 暖金調色盤）、Rubik + Nunito Sans 字型、SVG 圖示取代 Emoji、NavBar 毛玻璃效果、卡片暖色陰影、成功頁綠色 SVG 勾選圖示、Toast 品牌線
-- □ **T24** `[Wave 7]` `依賴:T23` 商品卡片「加入購物車」按鈕改為圓形圖示按鈕：以 SVG 購物車圖示取代文字按鈕，外觀為圓形外框（stroke 樣式）+ 內部購物車 SVG，hover 時填色反白，與設計系統 token 整合（琥珀色調）
+- ☑ **T24** `[Wave 7]` `依賴:T23` 商品卡片「加入購物車」按鈕改為圓形圖示按鈕：安裝 lucide-react、cart-with-plus SVG、hover 淡金填滿、成功勾勾、按鈕移入 In Stock 同行
+
+## 🎨 Hallmark Audit 修正（design token 紀律補強）
+
+> 依據 Hallmark audit 結果，補強設計系統 token 紀律。**不動** 後端與業務邏輯。
+
+- □ **H01** `[CRITICAL]` 修正 `CheckoutPage.css` inline hex 值改用 token：`#FFF5F5` → `--color-error-bg`、`#FECACA` → `--color-error-border`（新增至 `:root`）、`#16a34a` → `var(--color-success)`、`--color-text` / `--color-heading` 不存在的 token 改為 `var(--color-fg)`
+- □ **H02** `[CRITICAL]` 在 `index.css :root` 新增字型 token（`--font-display`, `--font-serif`, `--font-body`），全站 `font-family` hardcode 改用 token 引用
+- □ **H03** `[CRITICAL]` 將 `--color-card: #FFFFFF` 改為微暖白（`oklch(99% 0.006 75)`），消除純白 surface
+- □ **H04** `[MAJOR]` `CheckoutSuccessPage.css:46` 的 `success-pop` 動畫彈簧曲線 `cubic-bezier(0.34, 1.56, 0.64, 1)` 改為 `cubic-bezier(0.16, 1, 0.3, 1)`（exponential ease-out）
+- □ **H05** `[MAJOR]` 移除 `ProductListPage.css` 所有卡片 hover 的 `translateY(-4px)`，保留 shadow 變化（消除 universal lift）
+- □ **H06** `[MAJOR]` 在 `index.css :root` 新增 `--ease-out` / `--ease-in-out` easing token，全站 15+ 處裸 `ease` 替換為 token
+- □ **H07** `[MAJOR]` 將全站重複的 `rgba()` 陰影值提升為 `--shadow-card` / `--shadow-hover` token，集中管理
+- □ **H08** `[MAJOR]` 刪除 `CheckoutPage.css:64` dead code（`font-size: 0.85rem` 被第 68 行覆蓋）
+- □ **H09** `[MINOR]` `CheckoutPage.css` 優惠券區塊（`.checkout-order-summary`）裸 `px` 改用 `var(--sp-*)` spacing token
+- □ **H10** `[MINOR]` `NavBar.css:129` `cart-shake` 動畫 `ease-in-out` 改為 `linear`
 
 ## 🎟 優惠券功能（Coupon Feature — feature/coupon 分支）
 
@@ -348,7 +363,8 @@ npx playwright show-report                 # 開啟上次產生的 HTML 報告
 | 2026-06-13 | T23（完成）| UI/UX Pro Max 全站視覺優化：① `index.html` 加入 Rubik + Nunito Sans Google Fonts ② `index.css` 建立 14 個 CSS color token（E-commerce Luxury 暖金調色盤）+ Nunito Sans 內文字型 + `prefers-reduced-motion` 支援 ③ `NavBar.jsx` 移除 🛒 emoji → SVG 購物袋圖示；`NavBar.css` 加入 `backdrop-filter: blur(12px)` 毛玻璃、Logo 琥珀圓點裝飾、徽章改琥珀色 ④ `ProductListPage.css` 卡片 hover 改暖色陰影（amber tint）、圖片懸停放大、placeholder 改漸層暖米色、價格使用 tabular-nums ⑤ `CartPage.css` / `CheckoutPage.css` 統一圓角 18px + 卡片陰影 + Rubik 標題 + 結帳按鈕 box-shadow ⑥ `CheckoutPage.css` focus ring 改琥珀色（`--color-ring`） ⑦ `CheckoutSuccessPage.jsx` `✓` 文字改 SVG polyline 勾選圖示；`CheckoutSuccessPage.css` 圓圈背景改綠色 `#16A34A` + glow 陰影 ⑧ `Toast.css` 加左側琥珀品牌邊線；Playwright E2E class 名稱全部保留，測試相容 |
 | 2026-06-16 | README Demo 影片（完成）| 建立 `e2e/tests/demo-video.spec.ts`（專用錄影測試，含 waitForTimeout 自然節奏）；暫時開啟 `video: 'on'` 錄製 webm；安裝 ffmpeg（winget Gyan.FFmpeg）；轉換 webm→mp4（243K）→ GIF（2.2MB，fps=10 scale=900）；嵌入 README.md `## Demo` 區塊；playwright.config.ts 還原為 `retain-on-failure` |
 | 2026-06-16 | playwright-demo-recorder skill（進行中）| 使用者層級 skill 目錄已建立（`~/.claude/skills/playwright-demo-recorder/`），SKILL.md 尚未寫入（關機前中斷），下次繼續 |
-| 2026-06-18 | T24（新增）| 新增商品卡片 Add to Cart 按鈕改圓形 SVG 圖示任務 |
+| 2026-06-18 | T24（完成）| 商品卡片按鈕改圓形 SVG 圖示（lucide-react + cart-with-plus），hover 淡金，成功勾勾，移入 In Stock 同行 |
+| 2026-06-18 | Hallmark Audit | 執行 hallmark audit，發現 3 critical / 5 major / 2 minor，新增 H01–H10 修正任務 |
 | 2026-06-16 | Harness 強化（完成）| ① 新增 `PostToolUse` hook：編輯後端 `.java` 檔後自動執行單元測試（排除需 Docker 的 IntegrationTest）；腳本：`scripts/post-edit-test.js` ② 新增 `permissions.deny`：封鎖 `docker compose up*`，需改由使用者手動執行，防止 Claude 自動啟動服務；設定檔：`.claude/settings.json` |
 | 2026-06-16 | /simplify（完成）| 4 agent 並行審查後端（Reuse/Simplification/Efficiency/Altitude），已套用以下整理：① `CouponService` 新增 `applyCoupon()` 統一封裝 find→validate→calculate→consume；`validateCouponRules`/`calculateDiscount`/`consumeCoupon` 降為 private；提取 `normalizeCode()` 消除三處 `trim().toUpperCase()` 重複；移除 `Collectors.toList()` 改 `.toList()`；移除 null guard 雙重保險；`Boolean.TRUE.equals()` 簡化 ② `CartService` 移除 `CouponRepository` 直接依賴（改透過 `couponService.applyCoupon()`）；提取 `assertItemOwnership()` 消除 IDOR 驗證重複；刪除 2 參數 `checkout` 重載 ③ `OrderSummary` 5 參數建構子改為建構子委派 ④ `CheckoutRequest` 刪除單參數建構子；更新測試 3 處改用 `new CheckoutRequest(recipient, null)` ⑤ `CouponServiceUnitTest` 修正 3 個因 private 化失效的單元測試（改走公開 API `validateCoupon`/`applyCoupon`）；全部 47 測試通過（CouponServiceUnitTest 16/16、CartApiIntegrationTest 13/13、CouponApiIntegrationTest 14/14、ProductApiIntegrationTest 3/3、BackendApplicationTests 1/1）|
 
