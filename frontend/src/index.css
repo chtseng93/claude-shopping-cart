@@ -111,8 +111,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Material Symbols 本地字型（避免 headless 錄製時 CDN 未載入導致圖示顯示為文字） */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: block;
+  src: url('/fonts/MaterialSymbolsOutlined.woff2') format('woff2');
+}
+
 /* Material Symbols 圖示設定 */
 .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   display: inline-block;
   line-height: 1;

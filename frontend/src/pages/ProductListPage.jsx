@@ -223,10 +223,9 @@ export default function ProductListPage() {
               <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>
                 {couponCopied ? 'check' : 'content_copy'}
               </span>
-              {/* 疊層：兩段文字佔同一格，保留最寬尺寸 */}
               <span className="plp-hero-card__btn-label">
-                <span aria-hidden={couponCopied} className={couponCopied ? 'plp-hero-card__btn-label--hidden' : ''}>Copy Code: WELCOME10</span>
-                <span aria-hidden={!couponCopied} className={couponCopied ? '' : 'plp-hero-card__btn-label--hidden'}>Copied!</span>
+                <span className={couponCopied ? 'plp-hero-card__btn-label--hidden' : ''}>Copy Code: WELCOME10</span>
+                <span className={couponCopied ? '' : 'plp-hero-card__btn-label--hidden'}>Copied!</span>
               </span>
             </button>
           </div>

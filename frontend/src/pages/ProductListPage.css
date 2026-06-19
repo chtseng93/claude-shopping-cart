@@ -246,23 +246,23 @@
 .plp-hero-card__btn:active {
   transform: scale(0.97);
 }
-.plp-hero-card__btn--copied {
-  background: #D97706;
-  opacity: 1;
-  transition: background 0.2s ease;
-}
-/* 疊層容器：讓兩段文字佔同一格，按鈕不縮 */
+/* 疊層：兩段文字佔同一格，寬度固定為最寬者；visibility:hidden 確保不受父層 opacity 動畫影響 */
 .plp-hero-card__btn-label {
   display: inline-grid;
 }
 .plp-hero-card__btn-label > span {
   grid-area: 1 / 1;
-  transition: opacity 0.15s ease;
 }
 .plp-hero-card__btn-label--hidden {
-  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   user-select: none;
+}
+
+.plp-hero-card__btn--copied {
+  background: #D97706;
+  opacity: 1;
+  transition: background 0.2s ease;
 }
 
 /* ── Filter Bar（sticky）── */
