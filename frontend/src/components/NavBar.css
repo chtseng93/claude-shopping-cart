@@ -1,147 +1,163 @@
-/* =============================================
-   NavBar — 暖米底頂部導覽列，琥珀品牌色點綴
-   ============================================= */
+/* ============================================================
+   NavBar.css — FurnitureCo. 導覽列樣式
+   設計稿：docs/productlist.html
+   ============================================================ */
 
+/* ── 主容器（fixed 毛玻璃）── */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-
-  background-color: rgba(250, 250, 249, 0.92);
+  width: 100%;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.80);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border-light);
-  height: 64px;
+  box-shadow: 0 4px 20px rgba(176, 125, 58, 0.08);
+  transition: padding 0.3s ease;
 }
 
 .navbar__inner {
-  width: 100%;
-  max-width: 1200px;
-  height: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2.5rem;
+  padding: 16px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-}
-
-/* ---- Logo ---- */
-.navbar__logo {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-fg);
-  text-decoration: none;
-  letter-spacing: -0.03em;
-  display: flex;
   align-items: center;
-  gap: 2px;
-  transition: opacity 150ms ease;
 }
 
-.navbar__logo::after {
-  content: '';
-  display: inline-block;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: var(--color-accent);
-  margin-left: 1px;
-  margin-bottom: 10px;
-  flex-shrink: 0;
+/* ── Logo ── */
+.navbar__logo {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  color: #1e1b18;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  transition: opacity 0.2s ease;
 }
-
 .navbar__logo:hover {
   opacity: 0.75;
-  color: var(--color-fg);
+  color: #1e1b18;
 }
 
-/* ---- 右側操作區 ---- */
+/* ── 導覽連結（桌面）── */
+.navbar__links {
+  display: none;
+  align-items: center;
+  gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .navbar__links {
+    display: flex;
+  }
+}
+
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.navbar__link {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #474741;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.navbar__link:hover {
+  color: #5f5e5b;
+}
+
+/* ── 右側操作區 ── */
 .navbar__actions {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
+  gap: 20px;
 }
 
-/* ---- 購物車連結 ---- */
+/* ── 圖示按鈕（search / favorite）── */
+.navbar__icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #474741;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+.navbar__icon-btn:hover {
+  opacity: 0.6;
+}
+.navbar__icon-btn:active {
+  transform: none;
+}
+
+/* ── 購物車連結（含圖示與徽章）── */
 .navbar__cart-link {
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--sp-2);
-
-  color: var(--color-fg);
+  color: #474741;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  transition: background-color 150ms ease, color 150ms ease;
+  transition: opacity 0.2s ease;
 }
-
 .navbar__cart-link:hover {
-  background-color: var(--color-muted);
-  color: var(--color-fg);
+  opacity: 0.6;
+  color: #474741;
 }
 
-/* ---- 購物車圖示 ---- */
 .navbar__cart-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  color: var(--color-secondary);
+  line-height: 1;
 }
 
-/* ---- 數量徽章 ---- */
+/* ── 購物車晃動動畫 ── */
+.navbar__cart-icon--shake {
+  animation: cart-shake 0.3s linear;
+}
+@keyframes cart-shake {
+  0%, 100% { transform: rotate(0deg); }
+  20%       { transform: rotate(-12deg); }
+  40%       { transform: rotate(12deg); }
+  60%       { transform: rotate(-8deg); }
+  80%       { transform: rotate(8deg); }
+}
+
+/* ── 數量徽章 ── */
 .navbar__badge {
   position: absolute;
-  top: 2px;
-  right: 6px;
-
+  top: -6px;
+  right: -8px;
   min-width: 18px;
   height: 18px;
-  padding: 0 5px;
-
-  background-color: var(--color-accent);
-  color: #fff;
-  font-size: 0.65rem;
+  padding: 0 4px;
+  background-color: #B07D3A;
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 10px;
   font-weight: 700;
   line-height: 18px;
   text-align: center;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--color-bg);
-  z-index: 1;
+  border-radius: 9999px;
+  pointer-events: none;
 }
-
 .navbar__badge--bounce {
-  animation: badge-bounce 300ms var(--ease-out);
+  animation: badge-bounce 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 @keyframes badge-bounce {
   0%   { transform: scale(1); }
-  40%  { transform: scale(1.55); }
-  70%  { transform: scale(0.88); }
+  50%  { transform: scale(1.4); }
   100% { transform: scale(1); }
-}
-
-.navbar__cart-icon--shake {
-  display: inline-flex;
-  animation: cart-shake 300ms linear;
-}
-
-@keyframes cart-shake {
-  0%   { transform: rotate(0deg); }
-  20%  { transform: rotate(-14deg); }
-  50%  { transform: rotate(11deg); }
-  75%  { transform: rotate(-6deg); }
-  100% { transform: rotate(0deg); }
-}
-
-/* ---- 小螢幕隱藏 Cart 文字 ---- */
-@media (max-width: 480px) {
-  .navbar__inner {
-    padding: 0 1.25rem;
-  }
-  .navbar__cart-link span:not(.navbar__cart-icon):not(.navbar__badge) {
-    display: none;
-  }
 }

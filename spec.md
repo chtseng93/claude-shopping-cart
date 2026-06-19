@@ -1072,3 +1072,91 @@ classDiagram
     CouponRepository ..> Coupon
     CouponUsageRepository ..> CouponUsage
 ```
+
+---
+
+## 15. UI 重設計（feature/ui-redesign 分支）
+
+> 依據 Stitch AI 產出的設計稿（`docs/*.html`）進行前端四頁面全面重設計。不更動資料庫 schema；後端僅在 `ItemDto` 加入 `imageUrl` 欄位。
+
+### 15.1 設計稿對應
+
+| 設計稿 | 對應頁面 | React 元件 |
+|--------|---------|-----------|
+| `docs/productlist.html` | 商品列表（首頁） | `ProductListPage.jsx` |
+| `docs/checkout.html` | 購物車頁 | `CartPage.jsx` |
+| `docs/placeoder.html` | 結帳頁 | `CheckoutPage.jsx` |
+| `docs/confirmation.html` | 結帳成功頁 | `CheckoutSuccessPage.jsx` |
+
+### 15.2 設計系統
+
+- **字型**：`Playfair Display`（serif 標題）+ `Nunito Sans`（內文）+ `Material Symbols Outlined`（圖示），透過 `index.html` Google Fonts 載入
+- **色彩**：暖米色系（background `#fff8f5`、surface、warm amber `#B07D3A`），沿用現有 CSS variable 架構擴充
+- **CSS 方案**：安裝 Tailwind CSS v4（`@tailwindcss/vite`），設計稿 token 直接移植至 `tailwind.config.js`
+- **E2E 相容性**：以下 class name 在重設計後必須保留於對應 DOM 元素
+
+| class | 元素 |
+|-------|------|
+| `.plp-card` | 商品卡片 article |
+| `.navbar__logo` | 品牌 Logo |
+| `.navbar__badge` / `--bounce` | 購物車徽章 |
+| `.cart-item-row` / `--removing` | 購物車商品列 |
+| `.cart-empty-msg` | 空購物車提示 |
+| `.qty-btn` / `.qty-value` | 數量按鈕與數值 |
+| `.plp-btn--sold-out` | 售完按鈕 |
+| `.success-title` | 成功頁標題 |
+| `.success-items` | 訂單品項表格 |
+
+### 15.3 Banner 影片
+
+- 來源：`assets/banner_video.mp4`，複製至 `frontend/public/banner_video.mp4`（Vite 以 `/banner_video.mp4` 提供）
+- 高度：`70vh`
+- 隱藏浮水印（右下角）與側欄：container `overflow:hidden` + video `transform:scale(1.08) object-fit:cover`
+
+### 15.4 後端修改
+
+`ItemDto` 加入 `imageUrl` 欄位（唯一後端修改）：
+
+```java
+// ItemDto 新增欄位
+private String imageUrl;
+
+// ItemDto.from() 補上
+item.getProduct().getImageUrl()
+```
+
+`CartItem` entity 已透過 `@ManyToOne Product` 取得 `imageUrl`，`ItemDto.from()` 已有 `item.getProduct()` 呼叫，只需加欄位與 getter。
+
+### 15.5 頁面設計摘要
+
+**ProductListPage**
+- Hero：70vh 影片 banner，left-to-transparent overlay，glassmorphism 新會員折扣卡
+- Filter Bar：sticky，類別篩選 pill（All / Seating / Dining / Storage / Lighting）
+- Grid：3 欄（lg），4/5 aspect ratio，hover lift + shadow，圖片來自 API `imageUrl`
+
+**CartPage**（對應 `docs/checkout.html`）
+- 12欄 grid：左 8（商品清單 + 縮圖）/ 右 4（Order Summary sticky sidebar）
+- 縮圖圖片來自 cart API 新增 `imageUrl` 欄位
+- Sidebar：Subtotal / Shipping / Tax / Total + Proceed to Checkout 按鈕
+
+**CheckoutPage**（對應 `docs/placeoder.html`）
+- 2欄（7+5）：左表單（底線 input）+ 右訂單摘要
+- 優惠券：glassmorphism card + 下拉顯示可用代碼
+- Place Order 按鈕 + spinner + SSL badge
+
+**CheckoutSuccessPage**（對應 `docs/confirmation.html`）
+- 動畫 SVG checkmark（stroke-dashoffset 100→0）
+- 訂單資訊卡片：日期、訂單號、收件地址、品項表格、金額摘要
+
+### 15.6 任務清單
+
+| 任務 | 說明 |
+|------|------|
+| UI-00 | 後端 `ItemDto` 新增 `imageUrl` 欄位與 getter |
+| UI-01 | Tailwind CSS 安裝 + `tailwind.config.js` + `index.html` 字體更新 |
+| UI-02 | NavBar 重設計（Glassmorphism、FurnitureCo. logo、Material Symbols 圖示） |
+| UI-03 | ProductListPage Hero Banner（影片 + overlay + glassmorphism card）+ Filter Bar |
+| UI-04 | ProductListPage 商品卡片 Grid 重設計（4/5 ratio、hover、愛心按鈕） |
+| UI-05 | CartPage 重設計（12欄 grid、商品縮圖、sidebar 訂單摘要） |
+| UI-06 | CheckoutPage 重設計（2欄 layout、底線 input、glassmorphism 優惠券、Place Order 按鈕） |
+| UI-07 | CheckoutSuccessPage 重設計（動畫 checkmark、訂單卡片、Continue Shopping 按鈕） |

@@ -1,385 +1,575 @@
 /* ============================================================
-   ProductListPage.css — FurnitureCo. 商品列表頁
+   ProductListPage.css — FurnitureCo. 商品列表頁樣式
+   設計稿：docs/productlist.html
    ============================================================ */
 
-.plp-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem 5rem;
+/* ── 頁面最外層（NavBar 高度補償）── */
+.plp-page {
+  padding-top: 72px;
+  background: #fff8f5;
+  min-height: 100dvh;
 }
 
-@media (max-width: 640px) {
-  .plp-container {
-    padding: 0 1rem 3rem;
+/* ── Hero Section（影片 Banner）── */
+.plp-hero-section {
+  position: relative;
+  min-height: 560px;
+  height: 85vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 全幅背景圖容器 */
+.plp-hero-img-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* 背景圖：填滿並裁切置中 */
+.plp-hero-img {
+  /* 200% 寬度 = 只顯示影片左側 50%，右側畫框和牆面完全裁掉 */
+  width: 200%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+  /* Ken Burns：慢速縮小製造呼吸感，transform-origin 鎖左避免畫面偏移 */
+  animation: plp-ken-burns 8s linear forwards;
+  transform-origin: left center;
+}
+
+/* 漸層 overlay（左深→中透明→右側淡出收邊）*/
+.plp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(30, 27, 24, 0.65) 0%,
+    rgba(30, 27, 24, 0.20) 45%,
+    rgba(30, 27, 24, 0.20) 70%,
+    rgba(30, 27, 24, 0.75) 100%
+  );
+  z-index: 1;
+}
+
+/* ── Hero 進場動畫 keyframes ── */
+@keyframes plp-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* ── Hero 區塊 ── */
-.plp-hero {
-  padding: 3.5rem 0 3.25rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 0;
+/* Ken Burns：影片慢速縮小（scale 1.06 → 1）*/
+@keyframes plp-ken-burns {
+  from { transform: scale(1.06); }
+  to   { transform: scale(1.00); }
 }
 
-.plp-hero__content {
-  flex: 0 0 42%;
-  padding-right: 2.5rem;
-}
-
-/* 垂直琥珀分隔線 */
-.plp-hero__vline {
-  flex: 0 0 1px;
-  align-self: stretch;
-  background: linear-gradient(to bottom, transparent, var(--color-accent-light) 20%, var(--color-accent-light) 80%, transparent);
-  margin: 0.25rem 0;
-  opacity: 0.6;
-}
-
-/* 右側季節特輯面板 */
-.plp-hero__panel {
-  flex: 1;
-  padding-left: 2.5rem;
+/* Hero 文字內容 */
+.plp-hero-content {
+  position: relative;
+  z-index: 10;
+  height: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
 }
 
-.plp-hero__panel-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+@media (min-width: 768px) {
+  .plp-hero-content {
+    padding: 0 32px;
+  }
+}
+
+.plp-hero-eyebrow {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--color-accent);
-  margin: 0 0 0.75rem;
-}
-
-.plp-hero__panel-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 3.5vw, 3rem);
-  font-weight: 400;
-  color: var(--color-fg);
-  margin: 0 0 0.9rem;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-}
-
-.plp-hero__panel-text {
-  font-size: 0.9rem;
-  color: var(--color-muted-fg);
-  line-height: 1.7;
-  margin: 0 0 1.25rem;
-}
-
-/* 水平琥珀細線 */
-.plp-hero__panel-rule {
+  color: #B07D3A;
   display: block;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(to right, var(--color-accent-light), transparent);
-  margin-bottom: 1.25rem;
+  margin-bottom: 8px;
+  animation: plp-fade-up 400ms cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 }
 
-.plp-hero__panel-cta {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  text-decoration: none;
-  margin-bottom: 1.1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: gap 200ms ease, opacity 150ms ease;
+.plp-hero-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #ffffff;
+  margin: 0 0 16px;
+  max-width: 520px;
+  letter-spacing: -0.01em;
+  animation: plp-fade-up 500ms cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
 }
 
-.plp-hero__panel-cta:hover {
-  gap: 10px;
-  opacity: 0.85;
-  color: var(--color-accent);
+@media (min-width: 768px) {
+  .plp-hero-title {
+    font-size: 48px;
+    line-height: 56px;
+    letter-spacing: -0.02em;
+  }
 }
 
-/* "—— Curated for calm interiors ——" */
-.plp-hero__panel-tagline {
+.plp-hero-subtitle {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+  color: rgba(255, 255, 255, 0.90);
+  max-width: 480px;
+  margin: 0 0 40px;
+  animation: plp-fade-up 400ms cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
+}
+
+/* Glassmorphism 會員折扣卡 */
+.plp-hero-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 300px;
+  box-shadow: 0 8px 32px rgba(30, 27, 24, 0.12);
+  animation: plp-fade-up 400ms cubic-bezier(0.22, 1, 0.36, 1) 0.75s both;
+}
+
+.plp-hero-card__row {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-size: 0.7rem;
-  color: var(--color-accent-light);
-  letter-spacing: 0.08em;
-  margin: 0;
-  font-style: italic;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.plp-hero__panel-tagline-line {
-  flex: 0 0 28px;
-  height: 1px;
-  background-color: var(--color-accent-light);
-  opacity: 0.55;
+.plp-hero-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: rgba(176, 125, 58, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #B07D3A;
 }
 
-/* 琥珀色細線（在大標題上方） */
-.plp-hero__accent {
-  display: block;
-  width: 2.5rem;
-  height: 3px;
-  background: linear-gradient(to right, var(--color-accent), var(--color-accent-light));
-  border-radius: 2px;
-  margin-bottom: 0.875rem;
-}
-
-.plp-hero__title {
-  font-family: var(--font-serif);
-  font-size: clamp(3.25rem, 8vw, 5.5rem);
+.plp-hero-card__label {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--color-fg);
-  margin: 0 0 1.1rem;
-  line-height: 1.0;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #474741;
+  display: block;
+  margin-bottom: 2px;
 }
 
-.plp-hero__subtitle {
-  font-size: 0.95rem;
-  color: var(--color-muted-fg);
-  line-height: 1.7;
-  margin: 0;
+.plp-hero-card__text {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #1e1b18;
 }
 
-@media (max-width: 768px) {
-  .plp-hero {
-    flex-direction: column;
-    gap: 2rem;
-    padding: 2rem 0 1.5rem;
-  }
+.plp-hero-card__btn {
+  width: 100%;
+  padding: 10px 16px;
+  background: #B07D3A;
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+.plp-hero-card__btn:hover {
+  opacity: 0.88;
+}
+.plp-hero-card__btn:active {
+  transform: scale(0.97);
+}
+.plp-hero-card__btn--copied {
+  background: #D97706;
+  opacity: 1;
+  transition: background 0.2s ease;
+}
+/* 疊層容器：讓兩段文字佔同一格，按鈕不縮 */
+.plp-hero-card__btn-label {
+  display: inline-grid;
+}
+.plp-hero-card__btn-label > span {
+  grid-area: 1 / 1;
+  transition: opacity 0.15s ease;
+}
+.plp-hero-card__btn-label--hidden {
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
 
-  .plp-hero__content {
-    flex: none;
-    padding-right: 0;
-  }
+/* ── Filter Bar（sticky）── */
+.plp-filter-bar {
+  background: #fbf2ed;
+  /* 對齊設計稿 py-md = 24px */
+  padding: 24px 0;
+  position: sticky;
+  top: 72px;
+  z-index: 40;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(200, 199, 190, 0.35);
+}
 
-  .plp-hero__vline {
-    display: none;
-  }
+.plp-filter-bar__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
 
-  .plp-hero__panel {
-    padding-left: 0;
+@media (min-width: 768px) {
+  .plp-filter-bar__inner {
+    padding: 0 32px;
   }
+}
+
+.plp-filter-bar__pills {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.plp-filter-bar__pills::-webkit-scrollbar {
+  display: none;
+}
+
+.plp-filter-pill {
+  /* 對齊設計稿 px-md py-xs = 24px / 4px */
+  padding: 7px 24px;
+  border-radius: 9999px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.plp-filter-pill--active {
+  background: #34302c;
+  color: #ffffff;
+}
+.plp-filter-pill--inactive {
+  background: #e9e1dc;
+  color: #474741;
+}
+.plp-filter-pill--inactive:hover {
+  background: #c8c7be;
+}
+
+.plp-filter-bar__count {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #787770;
+  white-space: nowrap;
 }
 
 /* ── 商品 Grid ── */
-.plp-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2.75rem;
+.plp-section {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+  box-sizing: border-box;
 }
 
-@media (max-width: 640px) {
+@media (min-width: 768px) {
+  .plp-section {
+    /* 側邊距收窄、card 之間欄距加大，比例接近設計稿 */
+    padding: 64px 32px 96px;
+  }
+}
+
+.plp-grid {
+  display: grid;
+  /* minmax(0, 1fr) 讓格子可以縮到 0，避免內容撐破格線 */
+  grid-template-columns: minmax(0, 1fr);
+  /* row 48px / col 64px — gap 約為側邊距的 2 倍，呈現設計稿的通透感 */
+  gap: 48px 64px;
+  width: 100%;
+}
+
+/* 2 欄：≥600px */
+@media (min-width: 600px) {
   .plp-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.125rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 3 欄：≥960px */
+@media (min-width: 960px) {
+  .plp-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 4 欄：≥1440px 大螢幕 */
+@media (min-width: 1440px) {
+  .plp-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 /* ── 商品卡片 ── */
 .plp-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--color-card);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid var(--color-border-light);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 250ms ease, border-color 250ms ease;
+  cursor: pointer;
+  /* min-width: 0 防止卡片內 nowrap 文字撐破 grid 格線 */
+  min-width: 0;
+  /* overflow 不設 hidden，否則 hover shadow 會被剪掉 */
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
 .plp-card:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: var(--color-border);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(176, 125, 58, 0.08);
 }
 
-/* ── 圖片 ── */
+/* 圖片容器（4/5 比例）*/
+.plp-card__img-wrap {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f5ece7;
+  margin-bottom: 16px;
+}
+
 .plp-card__img {
   width: 100%;
-  height: 220px;
+  height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 400ms ease;
+  transition: transform 0.7s ease;
 }
-
 .plp-card:hover .plp-card__img {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
+/* 圖片佔位（無圖）*/
 .plp-card__img-placeholder {
   width: 100%;
-  height: 220px;
-  background: linear-gradient(135deg, #EDE9E2 0%, #F5F2EC 50%, #EDE9E2 100%);
-  flex-shrink: 0;
+  height: 100%;
+  background: linear-gradient(135deg, #efe6e2 0%, #fbf2ed 100%);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.plp-card__img-placeholder::after {
-  content: '';
-  display: block;
-  width: 48px;
-  height: 48px;
-  background-color: var(--color-border);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E");
-  mask-size: contain;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='9' cy='9' r='2'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E");
-  -webkit-mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  opacity: 0.35;
-}
-
-/* ── 卡片內容 ── */
-.plp-card__body {
-  padding: 1.25rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.plp-card__name {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--color-fg);
-  margin: 0 0 0.35rem;
-  letter-spacing: -0.015em;
-  line-height: 1.35;
-}
-
-.plp-card__desc {
-  font-size: 0.82rem;
-  color: var(--color-muted-fg);
-  margin: 0;
-  line-height: 1.6;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* 琥珀色短橫線（在說明文字與價格之間） */
-.plp-card__divider {
-  display: block;
-  width: 1.75rem;
-  height: 2px;
-  background: linear-gradient(to right, var(--color-accent), var(--color-accent-light));
-  border-radius: 1px;
-  margin: 0.875rem 0 0.625rem;
-  flex-shrink: 0;
-}
-
-.plp-card__price {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--color-fg);
-  margin: 0 0 0.3rem;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-.plp-card__stock {
-  font-size: 0.78rem;
-  color: var(--color-success);
-  font-weight: 600;
-  margin: 0;
-  letter-spacing: 0.01em;
-}
-
-.plp-card__stock--sold-out {
-  color: var(--color-muted-fg);
-  font-weight: 500;
-}
-
-/* ── stock 文字 + 按鈕同行 ── */
-.plp-card__bottom-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 0.5rem;
-}
-
-/* ── 加入購物車按鈕（圓形圖示）── */
-.plp-btn {
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  color: #B5B0AB;
+/* 愛心收藏按鈕 */
+.plp-card__fav-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(4px);
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 2px 8px rgba(30, 27, 24, 0.10);
+  transition: background 0.2s ease;
+  color: #474741;
+}
+.plp-card__fav-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #B07D3A;
+}
+
+/* Editor's Pick badge */
+.plp-card__badge {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: #B07D3A;
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+/* Sold Out overlay */
+.plp-card__sold-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plp-card__sold-tag {
+  background: rgba(30, 27, 24, 0.60);
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 2px;
+}
+
+/* 卡片底部資訊 */
+.plp-card__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.plp-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.plp-card__name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #1e1b18;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plp-card__desc {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #787770;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.plp-card__price {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #1e1b18;
+  white-space: nowrap;
   flex-shrink: 0;
-  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 100ms ease, box-shadow 200ms ease;
+  margin: 0;
 }
 
+.plp-card__price--sold-out {
+  text-decoration: line-through;
+  color: #787770;
+  opacity: 0.60;
+}
+
+/* ── 加入購物車按鈕（圖片右下角，圓形 Material Symbol）── */
+.plp-btn {
+  position: absolute;
+  bottom: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: none;
+  background: #B07D3A;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(176, 125, 58, 0.35);
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
 .plp-btn:hover:not(:disabled) {
-  background: var(--color-accent-light);
-  border-color: var(--color-accent-light);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(201, 169, 110, 0.35);
+  opacity: 0.88;
+  transform: translateY(-2px);
 }
-
 .plp-btn:active:not(:disabled) {
-  transform: scale(0.92);
+  transform: scale(0.93);
 }
-
 .plp-btn:disabled {
   cursor: not-allowed;
+  opacity: 0.50;
 }
-
-/* 售完：圓圈變灰、半透明 */
 .plp-btn--sold-out {
-  border-color: var(--color-muted-fg);
-  color: var(--color-muted-fg);
-  opacity: 0.45;
+  background: #c8c7be;
+  color: #787770;
+  box-shadow: none;
 }
-
-/* 加入成功：綠色填滿 */
 .plp-btn--done {
-  border-color: var(--color-success);
-  background: var(--color-success);
-  color: #fff;
+  background: #B07D3A;
 }
-
-.plp-btn--done:disabled {
-  opacity: 1;
-}
-
-/* 載入中：淡化 + spinner 旋轉 */
 .plp-btn--loading {
-  opacity: 0.6;
+  opacity: 0.70;
 }
 
-@keyframes plp-spin {
+/* spinner 動畫 */
+.plp-btn__spinner {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-.plp-btn__spinner {
-  animation: plp-spin 0.75s linear infinite;
-}
-
-/* ── 載入 / 錯誤狀態 ── */
+/* ── Loading / Error / Empty 狀態 ── */
 .plp-status {
   text-align: center;
-  font-size: 1rem;
-  color: var(--color-muted-fg);
-  margin-top: 4rem;
+  padding: 80px 24px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  color: #474741;
 }
-
 .plp-status--error {
-  color: var(--color-destructive);
+  color: #ba1a1a;
 }
