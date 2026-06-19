@@ -31,6 +31,9 @@ export default function ProductListPage() {
   /** @type {[string, Function]} 目前選中的分類篩選 */
   const [activeFilter, setActiveFilter] = useState('All pieces')
 
+  /** @type {[boolean, Function]} 是否展開全部商品（預設只顯示前 6 件）*/
+  const [showAll, setShowAll] = useState(false)
+
   /** @type {[boolean, Function]} 優惠券按鈕是否已複製（短暫變色用）*/
   const [couponCopied, setCouponCopied] = useState(false)
 
@@ -77,6 +80,14 @@ export default function ProductListPage() {
     return products.filter((p) => p.category === activeFilter)
   }, [products, activeFilter])
 
+  /** 切換分類時重設展開狀態 */
+  useEffect(() => {
+    setShowAll(false)
+  }, [activeFilter])
+
+  /** 目前實際顯示的商品（未展開時最多 6 件）*/
+  const displayedProducts = showAll ? filteredProducts : filteredProducts.slice(0, 6)
+
   /**
    * 商品列表渲染後，設定 IntersectionObserver 監聽每張卡片。
    * 卡片進入視窗時加 plp-card--visible 觸發入場動畫；
@@ -104,7 +115,7 @@ export default function ProductListPage() {
     gridRef.current.querySelectorAll('.plp-card--reveal').forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [filteredProducts])
+  }, [displayedProducts])
 
   /**
    * 點擊「加入購物車」按鈕的處理函式。
@@ -259,7 +270,7 @@ export default function ProductListPage() {
           ════════════════════════════════════════ */}
       <section className="plp-section" aria-label="Product listings">
         <div className="plp-grid" ref={gridRef}>
-          {filteredProducts.map((product, index) => {
+          {displayedProducts.map((product, index) => {
             const btnState = addingMap[product.id]
             const isSoldOut = product.stock === 0
             const isDisabled = isSoldOut || !!btnState
@@ -339,7 +350,151 @@ export default function ProductListPage() {
             )
           })}
         </div>
+
+        {/* ── Explore More ── */}
+        {filteredProducts.length > 6 && (
+          <div className="plp-explore-more">
+            {!showAll && (
+              <button
+                type="button"
+                className="plp-explore-more__btn"
+                onClick={() => setShowAll(true)}
+              >
+                Explore More
+              </button>
+            )}
+            <div className="plp-explore-more__dots" aria-hidden="true">
+              <span className={`plp-explore-more__dot${showAll ? '' : ' plp-explore-more__dot--active'}`} />
+              <span className={`plp-explore-more__dot${showAll ? ' plp-explore-more__dot--active' : ''}`} />
+              <span className="plp-explore-more__dot" />
+            </div>
+          </div>
+        )}
       </section>
+
+      {/* ════════════════════════════════════════
+          Material Swatch Feature Section
+          ════════════════════════════════════════ */}
+      <section className="plp-swatch-section" aria-label="Material swatches">
+        <div className="plp-swatch-layout">
+          {/* 左：材質特寫圖 */}
+          <div className="plp-swatch-img-wrap">
+            <img
+              className="plp-swatch-img"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCe2nyDpEO87YD3ibn1QYtxujaAk1cLaEhCFWkfx7RyZwIXQbHTlEk9XA7f1ZLh_xpKmh1nved0dPT9Qfr-SUOFfMJ3_rEQX89SW6ZO2s2TaVLuZlZ81OTX_PKAvaK08HghcoOYPEkN3ZnJEvY-LcGt9m-8y2smrwrnxiArZghkvl1oEmeYAuxoe8G90L0FvUnFGrM8mPsxqCTYt2sYj8wTpV141uz_iK_3vgTlCiO4qESwZlvF6eZMnulfmH0On-cJofrQiRPTFBdd"
+              alt="FurnitureCo material swatches — linen, brushed gold, white oak"
+            />
+          </div>
+
+          {/* 右：文案 + 色票 + 按鈕 */}
+          <div className="plp-swatch-content">
+            <span className="plp-swatch-eyebrow">The FurnitureCo Standards</span>
+            <h2 className="plp-swatch-title">
+              Tactile Excellence in<br />
+              <em>Every Fiber</em>
+            </h2>
+            <p className="plp-swatch-desc">
+              We believe your home should be as pleasant to touch as it is to see. Our
+              materials are sourced from sustainable forests and master weavers across Europe.
+            </p>
+
+            <div className="plp-swatches">
+              <p className="plp-swatches__label">Explore Our Swatches</p>
+              <div className="plp-swatches__row">
+                <div className="plp-swatch-item plp-swatch-item--active">
+                  <div className="plp-swatch-circle" style={{ background: '#E5E0D8' }} />
+                  <span className="plp-swatch-name">Sand Linen</span>
+                </div>
+                <div className="plp-swatch-item">
+                  <div className="plp-swatch-circle" style={{ background: '#5C5144' }} />
+                  <span className="plp-swatch-name">Dark Oak</span>
+                </div>
+                <div className="plp-swatch-item">
+                  <div className="plp-swatch-circle" style={{ background: '#B8A99A' }} />
+                  <span className="plp-swatch-name">Greige Wool</span>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" className="plp-swatch-order-btn">
+              Order Fabric Samples
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          Footer
+          ════════════════════════════════════════ */}
+      <footer className="plp-footer" aria-label="Site footer">
+        <div className="plp-footer__inner">
+          {/* 品牌欄 */}
+          <div className="plp-footer__brand">
+            <span className="plp-footer__brand-name">FurnitureCo.</span>
+            <p className="plp-footer__brand-desc">
+              Creating spaces of warmth, serenity, and functional beauty since 2012.
+            </p>
+            <div className="plp-footer__socials">
+              <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>public</span>
+              <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>potted_plant</span>
+              <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>chair</span>
+            </div>
+          </div>
+
+          {/* Shopping 欄 */}
+          <div className="plp-footer__col">
+            <p className="plp-footer__col-title">Shopping</p>
+            <ul className="plp-footer__links">
+              <li><a className="plp-footer__link" href="#">Store Locator</a></li>
+              <li><a className="plp-footer__link" href="#">Furniture Care</a></li>
+              <li><a className="plp-footer__link" href="#">Trade Program</a></li>
+              <li><a className="plp-footer__link" href="#">Financing</a></li>
+            </ul>
+          </div>
+
+          {/* Support 欄 */}
+          <div className="plp-footer__col">
+            <p className="plp-footer__col-title">Support</p>
+            <ul className="plp-footer__links">
+              <li><a className="plp-footer__link" href="#">Shipping &amp; Returns</a></li>
+              <li><a className="plp-footer__link" href="#">Privacy Policy</a></li>
+              <li><a className="plp-footer__link" href="#">Terms of Service</a></li>
+              <li><a className="plp-footer__link" href="#">Contact Us</a></li>
+            </ul>
+          </div>
+
+          {/* Stay Inspired 欄 */}
+          <div className="plp-footer__newsletter">
+            <p className="plp-footer__col-title">Stay Inspired</p>
+            <p className="plp-footer__newsletter-desc">Sign up for design tips and new arrivals.</p>
+            <form
+              className="plp-footer__newsletter-form"
+              onSubmit={(e) => e.preventDefault()}
+              aria-label="Newsletter signup"
+            >
+              <input
+                type="email"
+                className="plp-footer__newsletter-input"
+                placeholder="Email Address"
+                aria-label="Email address for newsletter"
+              />
+              <button type="submit" className="plp-footer__newsletter-btn" aria-label="Subscribe">
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>arrow_forward</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* 底部版權列 */}
+        <div className="plp-footer__bottom">
+          <p className="plp-footer__copyright">© 2024 FurnitureCo. Designed for Hygge living.</p>
+          <div className="plp-footer__payment">
+            <span>VISA</span>
+            <span>MASTERCARD</span>
+            <span>APPLE PAY</span>
+          </div>
+        </div>
+      </footer>
     </main>
   )
 }
