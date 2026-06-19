@@ -1,228 +1,334 @@
 /* ============================================================
-   CheckoutSuccessPage.css — 結帳成功頁
+   CheckoutSuccessPage.css — FurnitureCo. 結帳成功頁（UI 重設計版）
+   設計稿：docs/confirmation.html
    ============================================================ */
 
+/* ── 頁面根層 ── */
 .success-container {
-  max-width: 640px;
-  margin: 2.5rem auto;
-  padding: 2.5rem 2.25rem;
-  background: var(--color-card);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.75rem;
-}
-
-@media (max-width: 640px) {
-  .success-container {
-    margin: 1rem;
-    padding: 1.5rem 1.25rem;
-    border-radius: var(--radius-md);
-  }
-}
-
-.success-header {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-/* 綠色圓形 SVG 勾選圖示 */
-.success-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: var(--color-success);
-  color: #fff;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  padding-left: 16px;
+  padding-right: 16px;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: success-pop 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.28);
+  background: #fff8f5;
+}
+@media (min-width: 768px) {
+  .success-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 
-@keyframes success-pop {
-  from { transform: scale(0); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+.success-inner {
+  max-width: 768px;
+  width: 100%;
+  margin-top: 48px;
 }
 
+/* ── Hero 成功區塊 ── */
+.success-header {
+  text-align: center;
+  margin-bottom: 80px;
+}
+
+.success-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.success-icon-circle {
+  width: 96px;
+  height: 96px;
+  background: #faf7f2;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG 打勾動畫（slowmotion 版：1200ms + cubic-bezier(0.2,0.8,0.2,1)）*/
+.success-checkmark-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: dash 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  animation-delay: 200ms;
+}
+@keyframes dash {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Stagger fade-up 動畫（對應 slowmotion 設計稿）── */
+@keyframes success-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.success-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: success-fade-up 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* stagger 延遲：對應 icon / title / subtitle / card / cta */
+.success-stagger-1 { animation-delay: 100ms; }
+.success-stagger-2 { animation-delay: 300ms; }
+.success-stagger-3 { animation-delay: 500ms; }
+.success-stagger-4 { animation-delay: 700ms; }
+.success-stagger-5 { animation-delay: 900ms; }
+
+/* 無障礙：減少動態偏好時停用所有動畫 */
+@media (prefers-reduced-motion: reduce) {
+  .success-fade-up,
+  .success-checkmark-path {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+/* 標題 */
 .success-title {
-  font-family: var(--font-display);
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--color-fg);
-  margin: 0;
-  letter-spacing: -0.025em;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  color: #1e1b18;
+  margin: 0 0 8px;
+}
+@media (min-width: 768px) {
+  .success-title {
+    font-size: 48px;
+    line-height: 56px;
+    letter-spacing: -0.02em;
+  }
 }
 
 .success-subtitle {
-  font-size: 1rem;
-  color: var(--color-muted-fg);
-  margin: 0;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 28px;
+  color: #474741;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 /* ── 訂單摘要卡片 ── */
 .success-card {
-  width: 100%;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  background: #ffffff;
+  border: 1px solid #efe6e2;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(176, 125, 58, 0.06);
+  margin-bottom: 0;
 }
 
-.success-card__heading {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-fg);
-  margin: 0;
-  letter-spacing: -0.015em;
+/* 卡片頂部資訊（日期、單號、收件人）*/
+.success-card__meta-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  padding: 24px;
+  border-bottom: 1px solid #efe6e2;
+}
+@media (min-width: 640px) {
+  .success-card__meta-grid {
+    grid-template-columns: 1fr 1fr;
+    padding: 32px;
+  }
 }
 
-.success-card__meta {
-  font-size: 0.85rem;
-  color: var(--color-muted-fg);
-  margin: 0;
-}
-
-.success-recipient {
-  border-top: 1px solid var(--color-border-light);
-  padding-top: 1rem;
-}
-
-.success-recipient__heading {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-muted-fg);
-  margin: 0 0 0.6rem;
+.success-card__meta-item {}
+.success-card__meta-label {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  color: #5f5e5b;
+  display: block;
+  margin-bottom: 8px;
+}
+.success-card__meta-value {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #1e1b18;
+  margin: 0;
 }
 
+/* 收件人區塊（跨欄）*/
+.success-recipient {
+  grid-column: 1 / -1;
+}
+.success-recipient__heading {
+  display: none;
+}
 .success-recipient__list {
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 4px;
 }
-
 .success-recipient__row {
-  display: flex;
-  gap: 0.75rem;
-  font-size: 0.875rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #1e1b18;
 }
-
 .success-recipient__row dt {
-  color: var(--color-muted-fg);
-  min-width: 64px;
-  flex-shrink: 0;
-}
-
-.success-recipient__row dd {
-  margin: 0;
-  color: var(--color-fg);
+  color: #474741;
+  white-space: nowrap;
   font-weight: 600;
-  word-break: break-all;
 }
 
-/* ── 品項列表 ── */
+/* ── 品項表格 ── */
 .success-items {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.875rem;
-  border-top: 1px solid var(--color-border-light);
 }
-
-.success-items thead tr {
-  border-bottom: 1px solid var(--color-border-light);
+.success-items thead {
+  background: #fbf2ed;
 }
-
-.success-items th {
-  text-align: left;
-  font-weight: 700;
-  color: var(--color-muted-fg);
-  padding: 0.55rem 0.25rem;
-  white-space: nowrap;
-  font-size: 0.7rem;
+.success-items thead th {
+  padding: 12px 24px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  color: #474741;
+  text-align: left;
 }
-
-.success-items td {
-  padding: 0.55rem 0.25rem;
-  color: var(--color-fg);
-  vertical-align: middle;
-  font-variant-numeric: tabular-nums;
-}
-
-.success-items__col--name { width: 100%; }
-
 .success-items__col--price,
-.success-items__col--qty,
+.success-items__col--qty {
+  text-align: center;
+}
 .success-items__col--subtotal {
   text-align: right;
-  white-space: nowrap;
 }
-
-.success-items th.success-items__col--price,
-.success-items th.success-items__col--qty,
-.success-items th.success-items__col--subtotal {
+.success-items tbody tr {
+  border-bottom: 1px solid #e9e1dc;
+}
+.success-items tbody tr:last-child {
+  border-bottom: none;
+}
+.success-items tbody td {
+  padding: 16px 24px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #1e1b18;
+}
+.success-items tbody td:nth-child(2),
+.success-items tbody td:nth-child(3) {
+  text-align: center;
+}
+.success-items tbody td:last-child {
   text-align: right;
 }
 
-/* ── 訂單總金額 ── */
-.success-total {
+/* 品項名稱欄 */
+.success-item-cell {
   display: flex;
-  justify-content: flex-end;
-  align-items: baseline;
-  gap: 1rem;
-  padding-top: 0.875rem;
-  border-top: 2px solid var(--color-border);
+  align-items: center;
+  gap: 16px;
 }
-
-.success-total__label {
-  font-size: 0.95rem;
+.success-item-name {
   font-weight: 600;
-  color: var(--color-muted-fg);
+  color: #1e1b18;
+  margin: 0 0 2px;
+  font-size: 14px;
 }
 
+/* ── 金額區塊 ── */
+.success-total {
+  background: rgba(250, 247, 242, 0.50);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+.success-total__row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 280px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #474741;
+}
+.success-total__label {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #1e1b18;
+}
 .success-total__amount {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--color-fg);
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #1e1b18;
 }
-
-/* ── 繼續購物按鈕 ── */
-.success-continue-btn {
-  padding: 0.85rem 2.75rem;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-on-primary);
-  background: var(--color-primary);
+.success-total__divider {
   border: none;
-  border-radius: var(--radius-sm);
+  border-top: 1px solid #e9e1dc;
+  width: 100%;
+  max-width: 280px;
+  margin: 0;
+}
+
+/* ── CTA 按鈕 ── */
+.success-cta {
+  margin-top: 80px;
+  text-align: center;
+}
+.success-continue-btn {
+  display: inline-block;
+  padding: 16px 80px;
+  background: #5f5e5c;
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 9999px;
   cursor: pointer;
-  letter-spacing: 0.025em;
-  transition: opacity 150ms ease, transform 100ms ease, box-shadow 200ms ease;
+  box-shadow: 0 4px 12px rgba(30, 27, 24, 0.15);
+  transition: background 0.3s ease, transform 0.1s ease;
 }
-
 .success-continue-btn:hover {
-  opacity: 0.85;
-  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.2);
+  background: #34302c;
 }
-
 .success-continue-btn:active {
   transform: scale(0.97);
+}
+
+.success-cta__help {
+  margin-top: 16px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  color: #474741;
+}
+.success-cta__help a {
+  color: #5f5e5b;
+  text-decoration: underline;
 }

@@ -1,247 +1,439 @@
 /* ============================================================
-   CartPage.css — 購物車頁
+   CartPage.css — FurnitureCo. 購物車頁（UI 重設計版）
+   設計稿：docs/checkout.html
    ============================================================ */
 
-.cart-page {
-  max-width: 720px;
-  margin: 2.5rem auto;
-  padding: 2rem 2.25rem;
-  background: var(--color-card);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
+/* ── 入場動畫 ── */
+@keyframes cart-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.cart-fade-up {
+  opacity: 0;
+  animation: cart-fade-up 1000ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.cart-s1 { animation-delay: 100ms; }
+.cart-s2 { animation-delay: 300ms; }
+.cart-s3 { animation-delay: 500ms; }
+@media (prefers-reduced-motion: reduce) {
+  .cart-fade-up { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 
-@media (max-width: 640px) {
+/* ── 頁面根層（NavBar 高度補償）── */
+.cart-page {
+  padding-top: 128px;
+  padding-bottom: 80px;
+  padding-left: 16px;
+  padding-right: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  background: #fff8f5;
+  min-height: 100dvh;
+}
+
+@media (min-width: 768px) {
   .cart-page {
-    margin: 1rem;
-    padding: 1.25rem 1.25rem;
-    border-radius: var(--radius-md);
+    padding-left: 24px;
+    padding-right: 24px;
   }
 }
 
+/* ── 麵包屑 ── */
+.cart-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #787770;
+  margin-bottom: 16px;
+}
+.cart-breadcrumb a {
+  color: #787770;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.cart-breadcrumb a:hover {
+  color: #5f5e5b;
+}
+
+/* ── 頁面標題 ── */
 .cart-title {
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 700;
-  margin-bottom: 1.75rem;
-  color: var(--color-fg);
-  letter-spacing: -0.025em;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  color: #1e1b18;
+  margin: 0 0 48px;
+}
+@media (min-width: 768px) {
+  .cart-title {
+    font-size: 48px;
+    line-height: 56px;
+    letter-spacing: -0.02em;
+  }
 }
 
-.cart-loading {
-  color: var(--color-muted-fg);
-  font-size: 1rem;
+/* ── 主要雙欄 Grid ── */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .cart-layout {
+    grid-template-columns: 8fr 4fr;
+  }
+}
+
+/* ── 商品列表區塊 ── */
+.cart-list-section {}
+
+/* 表頭（桌面）*/
+.cart-list-header {
+  display: none;
+  grid-template-columns: 6fr 2fr 2fr 2fr;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #c8c7be;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #787770;
+}
+@media (min-width: 768px) {
+  .cart-list-header {
+    display: grid;
+  }
+}
+.cart-list-header--price,
+.cart-list-header--qty {
   text-align: center;
-  margin-top: 3rem;
+}
+.cart-list-header--subtotal {
+  text-align: right;
 }
 
+/* 商品列表 */
+.cart-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── 商品列（cart-item-row）── */
+.cart-item-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid #efe6e2;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+@media (min-width: 768px) {
+  .cart-item-row {
+    grid-template-columns: 6fr 2fr 2fr 2fr;
+    align-items: center;
+    gap: 0;
+  }
+}
+
+/* 淡出動畫（移除時）*/
+.cart-item-row--removing {
+  opacity: 0;
+  transform: translateX(20px);
+  pointer-events: none;
+}
+
+/* 商品圖 + 名稱區塊 */
+.cart-item-info {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.cart-item-thumb {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f5ece7;
+  flex-shrink: 0;
+}
+.cart-item-thumb-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #efe6e2 0%, #fbf2ed 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #c8a882;
+}
+
+.cart-item-meta {}
+
+.cart-item-name {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1e1b18;
+  display: block;
+  margin-bottom: 4px;
+}
+.cart-item-desc {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  color: #474741;
+  display: block;
+  margin-bottom: 8px;
+}
+.cart-item-remove {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #ba1a1a;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.2s ease;
+}
+.cart-item-remove:hover {
+  opacity: 0.70;
+}
+
+/* 單價、數量、小計 */
+.cart-item-unit-price {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  color: #1e1b18;
+  text-align: center;
+}
+
+/* 數量控制：rounded pill */
+.cart-item-qty {
+  display: flex;
+  justify-content: center;
+}
+.qty-pill {
+  display: flex;
+  align-items: center;
+  border: 1px solid #c8c7be;
+  border-radius: 9999px;
+  padding: 4px 8px;
+  background: #fbf2ed;
+  gap: 4px;
+}
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #474741;
+  transition: color 0.2s ease;
+  border-radius: 9999px;
+}
+.qty-btn:hover:not(:disabled) {
+  color: #5f5e5b;
+}
+.qty-btn:disabled {
+  opacity: 0.40;
+  cursor: not-allowed;
+}
+.qty-value {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #1e1b18;
+  min-width: 32px;
+  text-align: center;
+}
+
+.cart-item-subtotal {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1b18;
+  text-align: right;
+}
+
+/* ── 空購物車 ── */
 .cart-empty {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  margin-top: 3rem;
-  padding-bottom: 1.5rem;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
 }
-
+.cart-empty-icon {
+  font-size: 64px;
+  color: #c8c7be;
+  margin-bottom: 24px;
+}
 .cart-empty-msg {
-  font-size: 1rem;
-  color: var(--color-muted-fg);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: #1e1b18;
+  margin: 0 0 16px;
 }
-
+.cart-empty-desc {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  color: #474741;
+  max-width: 360px;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
 .cart-continue-link {
-  display: inline-block;
-  padding: 0.65rem 1.75rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5f5e5b;
   text-decoration: none;
-  letter-spacing: 0.02em;
-  transition: opacity 150ms ease;
+  border-bottom: 2px solid #5f5e5b;
+  padding-bottom: 2px;
+  transition: opacity 0.2s ease;
 }
-
 .cart-continue-link:hover {
-  opacity: 0.82;
-  color: var(--color-on-primary);
+  opacity: 0.70;
 }
 
-/* ── 明細列表 ── */
-.cart-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 0.5rem;
+/* ── 載入中 ── */
+.cart-loading {
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  color: #474741;
+  text-align: center;
+  padding: 80px 24px;
+}
+
+/* ── Order Summary 側欄 ── */
+.cart-summary {
+  background: #fbf2ed;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(176, 125, 58, 0.08);
+  position: sticky;
+  top: 100px;
+}
+@media (min-width: 768px) {
+  .cart-summary {
+    padding: 32px;
+  }
+}
+
+.cart-summary__title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #1e1b18;
+  margin: 0 0 24px;
+}
+
+.cart-summary__rows {
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
 }
-
-.cart-item-row {
+.cart-summary__row {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid var(--color-border-light);
-
-  opacity: 1;
-  max-height: 90px;
-  overflow: hidden;
-  transition: opacity 300ms ease, max-height 300ms ease, padding 300ms ease;
+  justify-content: space-between;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #474741;
 }
 
-.cart-item-row--removing {
-  opacity: 0;
-  max-height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.cart-item-name {
-  flex: 1;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--color-fg);
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  letter-spacing: -0.01em;
-}
-
-.cart-item-unit-price {
-  width: 5.5rem;
-  text-align: right;
-  color: var(--color-muted-fg);
-  font-size: 0.875rem;
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.cart-item-qty {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.qty-btn {
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border);
-  background-color: transparent;
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--color-fg);
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
-}
-
-.qty-btn:hover:not(:disabled) {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.qty-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-
-.qty-value {
-  min-width: 1.75rem;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--color-fg);
-  font-variant-numeric: tabular-nums;
-}
-
-.cart-item-subtotal {
-  width: 6rem;
-  text-align: right;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--color-fg);
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── 分隔線 ── */
-.cart-divider {
+.cart-summary__divider {
   border: none;
-  border-top: 1.5px solid var(--color-border-light);
-  margin: 1.125rem 0;
+  border-top: 1px solid #c8c7be;
+  margin: 0 0 24px;
 }
 
-/* ── 合計區塊 ── */
-.cart-summary {
+.cart-summary__total-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: baseline;
-  gap: 1.25rem;
-  padding: 0.5rem 0 1.25rem;
+  margin-bottom: 32px;
 }
-
 .cart-summary-label {
-  font-size: 0.9rem;
-  color: var(--color-muted-fg);
-  font-weight: 500;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1e1b18;
 }
-
 .cart-summary-total {
-  font-family: var(--font-display);
-  font-size: 1.625rem;
-  font-weight: 800;
-  color: var(--color-fg);
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: #1e1b18;
 }
 
-/* ── 操作按鈕區 ── */
-.cart-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
+/* 結帳按鈕 */
 .cart-checkout-btn {
-  padding: 0.8rem 2.5rem;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: var(--radius-sm);
+  width: 100%;
+  padding: 16px;
+  background: #5f5e5b;
+  color: #ffffff;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   border: none;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
+  border-radius: 8px;
   cursor: pointer;
-  letter-spacing: 0.025em;
-  transition: opacity 150ms ease, transform 100ms ease, box-shadow 200ms ease;
+  box-shadow: 0 4px 20px rgba(176, 125, 58, 0.08);
+  transition: background 0.3s ease, transform 0.1s ease;
 }
-
 .cart-checkout-btn:hover:not(:disabled) {
-  opacity: 0.85;
-  box-shadow: 0 4px 16px rgba(28, 25, 23, 0.2);
+  background: #34302c;
 }
-
 .cart-checkout-btn:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
-
 .cart-checkout-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.50;
   cursor: not-allowed;
 }
-
 .cart-checkout-btn--checking {
-  background: var(--color-success);
-  opacity: 1 !important;
-  cursor: default;
+  background: #34302c;
+}
+
+/* 補充說明 */
+.cart-summary__perks {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 32px;
+}
+.cart-summary__perk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  color: #474741;
 }

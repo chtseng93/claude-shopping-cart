@@ -8,7 +8,7 @@ VALUES (
     'Clean lines, solid oak legs, deep-seated comfort. Available in oatmeal and charcoal.',
     899.00,
     15,
-    'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop'
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuCuWd0wtbo1x9gEYuPI1iv_e58FD_ME7eXXSTiLZPwIsXJGbUsLde0c6KuEhjYEN5flxnHSV7NMoxDXbm9tXgJUAnqd9lHFjM-DlBVg5EmWMXDwtHVEYkU0DWPpiB_4SePfoEx_dVJGGuJ4IFo13FVc0nteITlAzDzBznyoeFn2YgdBWHUc6wT2MZ7vjcnETDi9Daxk-b5JbUKN8XS1MK6q-lKOR0BWaPkbbRXR_BpcEXFjatpxiwWoHWJHzpj6tunq7m-qJGwv7VV6'
 )
 ON CONFLICT DO NOTHING;
 
@@ -82,7 +82,7 @@ VALUES (
     'White Carrara marble top, brushed gold base. A refined accent piece for bedroom or lounge.',
     670.00,
     10,
-    'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop'
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuDZRztqNLYFFqq6y7zIgZku-EZ7PUjTtQX69s5hqZSWsZVh6d5iX-_wnT6_uBffy1bopU2HEjvkc_jtMr30yqSKgp5DpBOS6TbkiFXQtKJbeh3JGeeE4EMEL-nXZJQ3b44ku5alMem23-_nuoY7Q6Ef1tn6d4wana9Rcu8vF3xZirvOuRELZYBjefl8Vtb_GpHAqjET4anOkFchWOSjXEU2zM6_ky0I4W6xYdjg-FurFleg-8Y9iFyGHcKdrbRJSFe2_MM1iKTUzOYG'
 )
 ON CONFLICT DO NOTHING;
 
@@ -95,7 +95,7 @@ VALUES (
     'Tufted headboard in dove-grey fabric, solid pine slat base. Fits queen and king mattresses.',
     1100.00,
     6,
-    'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&auto=format&fit=crop'
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuC0QwV-vR57wcprGL_ARjxAQC3kNj17liHBa6AAPR1FH944VJKDa2afW1LNVvuujkw-53_7LAd9NvIQ2oTvTs30qgbejPQUDV_xYvmoVkHrkK6nxiZvSXI8P8V6BQRuaQAr01NxuyhSuBBdVBQBimgZlBNahs1bvf1TCB3t4MJJ-avVSFrhAQd1W9JbSv4L9n05y5L1EE0keqwzr8qx0Cm_c4pSThZNK11RUAI9NH4a3ScvBD9qcJE2HtOqEg_M8xjAUB9YXnXnxOUL'
 )
 ON CONFLICT DO NOTHING;
 
@@ -119,7 +119,7 @@ VALUES (
     'Deep teal velvet, removable tray top, hidden storage inside. Doubles as a coffee table.',
     420.00,
     9,
-    'https://images.unsplash.com/photo-1550226891-ef816aed4a98?w=600&auto=format&fit=crop'
+    'https://lh3.googleusercontent.com/aida-public/AB6AXuBJzT0NJUHTpxesQHfaV-Lqv7lsFuAyBOdR1ndKHhjXQ5_8L1LphbW_AsAiBlUcSgT37iBrfxek8_O_6MWkUywVJvD0zTpYHCpzl8HEXhK8zCN8u__g7GFLEehavMPGCjkD0d4-5FPIDdZ7KCfdX-NTotLWCtT747kmH8z5MCcs9WW5b3H5TQCtIhsp9ciJPAcVJoD5cKIhiAipJUVRnRZiFSsD1m0CvqHbvyf70HEnT_Mm1KLJ8RSHUSbYr_tsOwPPcCGJGOUtZjp9'
 )
 ON CONFLICT DO NOTHING;
 

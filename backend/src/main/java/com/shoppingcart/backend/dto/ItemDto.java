@@ -30,6 +30,9 @@ public class ItemDto {
     /** 小計金額 = unitPrice × quantity，由伺服器計算 */
     private BigDecimal subtotal;
 
+    /** 商品圖片 URL（從 Product entity 取得，供購物車頁縮圖顯示） */
+    private String imageUrl;
+
     // ── 建構子 ──────────────────────────────────────────────────────────
 
     /** Jackson 反序列化用無參數建構子 */
@@ -44,15 +47,17 @@ public class ItemDto {
      * @param unitPrice 快照單價
      * @param quantity  數量
      * @param subtotal  小計（伺服器計算）
+     * @param imageUrl  商品圖片 URL
      */
     public ItemDto(UUID itemId, UUID productId, String name,
-                   BigDecimal unitPrice, int quantity, BigDecimal subtotal) {
+                   BigDecimal unitPrice, int quantity, BigDecimal subtotal, String imageUrl) {
         this.itemId = itemId;
         this.productId = productId;
         this.name = name;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
         this.subtotal = subtotal;
+        this.imageUrl = imageUrl;
     }
 
     // ── 靜態工廠方法 ──────────────────────────────────────────────────────
@@ -72,7 +77,8 @@ public class ItemDto {
                 item.getProduct().getName(),
                 item.getUnitPrice(),
                 item.getQuantity(),
-                subtotal
+                subtotal,
+                item.getProduct().getImageUrl()
         );
     }
 
@@ -95,4 +101,7 @@ public class ItemDto {
 
     /** 取得伺服器計算的小計金額 */
     public BigDecimal getSubtotal() { return subtotal; }
+
+    /** 取得商品圖片 URL */
+    public String getImageUrl() { return imageUrl; }
 }
