@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import './CartPage.css'
@@ -196,6 +196,11 @@ export default function CartPage() {
     }
   }, [loadingMap, updateItem, setLoading])
 
+  /** 進入頁面時捲回頂部 */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [checkingOut, setCheckingOut] = useState(false)
 
   /** 短暫顯示按鈕變色後跳轉結帳頁 */
@@ -230,7 +235,7 @@ export default function CartPage() {
         <span>Shopping Cart</span>
       </nav>
 
-      <h1 className="cart-title">Shopping Cart</h1>
+      <h1 className="cart-title cart-fade-up cart-s1">Shopping Cart</h1>
 
       {isEmpty ? (
         /* ── 購物車為空 ── */
@@ -247,7 +252,7 @@ export default function CartPage() {
           {/* ════════════════════════════════════════
               左欄：商品列表
               ════════════════════════════════════════ */}
-          <div className="cart-list-section">
+          <div className="cart-list-section cart-fade-up cart-s2">
             {/* 表頭（桌面）*/}
             <div className="cart-list-header" aria-hidden="true">
               <span>Product</span>
@@ -274,7 +279,7 @@ export default function CartPage() {
           {/* ════════════════════════════════════════
               右欄：Order Summary
               ════════════════════════════════════════ */}
-          <div className="cart-summary" aria-label="Order Summary">
+          <div className="cart-summary cart-fade-up cart-s3" aria-label="Order Summary">
             <h2 className="cart-summary__title">Order Summary</h2>
 
             <div className="cart-summary__rows">

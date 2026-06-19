@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getProducts } from '../api/products'
 import { useCart } from '../context/CartContext'
 import './ProductListPage.css'
@@ -44,6 +44,9 @@ export default function ProductListPage() {
   /** 從 CartContext 取得 addItem 方法 */
   const { addItem } = useCart()
 
+  /** 商品 Grid 的 ref，用於 IntersectionObserver 偵測卡片進入視窗 */
+  const gridRef = useRef(null)
+
   /**
    * 頁面掛載時載入商品列表。
    * 載入失敗時設定 error 訊息。
@@ -73,6 +76,35 @@ export default function ProductListPage() {
     if (activeFilter === 'All pieces') return products
     return products.filter((p) => p.category === activeFilter)
   }, [products, activeFilter])
+
+  /**
+   * 商品列表渲染後，設定 IntersectionObserver 監聽每張卡片。
+   * 卡片進入視窗時加 plp-card--visible 觸發入場動畫；
+   * 動畫結束後移除 reveal class，讓 hover transform 正常作用。
+   */
+  useEffect(() => {
+    if (!gridRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target
+            el.classList.add('plp-card--visible')
+            observer.unobserve(el)
+            setTimeout(() => {
+              el.classList.remove('plp-card--reveal', 'plp-card--visible')
+            }, 800)
+          }
+        })
+      },
+      { threshold: 0.05, rootMargin: '0px' }
+    )
+
+    gridRef.current.querySelectorAll('.plp-card--reveal').forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [filteredProducts])
 
   /**
    * 點擊「加入購物車」按鈕的處理函式。
@@ -219,7 +251,7 @@ export default function ProductListPage() {
           商品 Grid
           ════════════════════════════════════════ */}
       <section className="plp-section" aria-label="Product listings">
-        <div className="plp-grid">
+        <div className="plp-grid" ref={gridRef}>
           {filteredProducts.map((product, index) => {
             const btnState = addingMap[product.id]
             const isSoldOut = product.stock === 0
@@ -228,7 +260,7 @@ export default function ProductListPage() {
             const showBadge = index === 0
 
             return (
-              <article key={product.id} className="plp-card">
+              <article key={product.id} className="plp-card plp-card--reveal">
                 {/* 圖片容器：愛心、加入購物車按鈕均在圖片內 */}
                 <div className="plp-card__img-wrap">
                   <ProductImage imageUrl={product.imageUrl} name={product.name} />

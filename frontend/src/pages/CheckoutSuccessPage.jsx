@@ -31,6 +31,11 @@ export default function CheckoutSuccessPage() {
     }
   }, [orderSummary, navigate])
 
+  /** 進入頁面時捲回頂部，確保 icon + 標題從頭顯示 */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   /* 無資料時不渲染任何內容（等待導向） */
   if (!orderSummary) return null
 
@@ -55,7 +60,8 @@ export default function CheckoutSuccessPage() {
             Hero 成功區塊
             ════════════════════════════════════════ */}
         <div className="success-header">
-          <div className="success-icon-wrap">
+          {/* icon：stagger-1（delay 100ms）*/}
+          <div className="success-icon-wrap success-fade-up success-stagger-1">
             <div className="success-icon-circle">
               <svg
                 width="64"
@@ -73,17 +79,19 @@ export default function CheckoutSuccessPage() {
             </div>
           </div>
 
-          <h1 className="success-title">Order Confirmed!</h1>
-          <p className="success-subtitle">
+          {/* 標題：stagger-2（delay 300ms）*/}
+          <h1 className="success-title success-fade-up success-stagger-2">Order Confirmed!</h1>
+          {/* 副標題：stagger-3（delay 500ms）*/}
+          <p className="success-subtitle success-fade-up success-stagger-3">
             Your Scandinavian-inspired sanctuary is just a shipment away.
             We've sent a receipt to your email.
           </p>
         </div>
 
         {/* ════════════════════════════════════════
-            訂單摘要卡片
+            訂單摘要卡片（stagger-4，delay 700ms）
             ════════════════════════════════════════ */}
-        <section className="success-card" aria-label="Order Summary">
+        <section className="success-card success-fade-up success-stagger-4" aria-label="Order Summary">
 
           {/* 日期 + 收件人 */}
           <div className="success-card__meta-grid">
@@ -174,9 +182,9 @@ export default function CheckoutSuccessPage() {
         </section>
 
         {/* ════════════════════════════════════════
-            Continue Shopping CTA
+            Continue Shopping CTA（stagger-5，delay 900ms）
             ════════════════════════════════════════ */}
-        <div className="success-cta">
+        <div className="success-cta success-fade-up success-stagger-5">
           <button
             type="button"
             className="success-continue-btn"

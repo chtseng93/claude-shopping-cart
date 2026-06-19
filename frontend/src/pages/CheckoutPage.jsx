@@ -40,6 +40,11 @@ export default function CheckoutPage() {
   /** 優惠券試算結果（僅顯示用） */
   const [couponResult, setCouponResult] = useState(null)
 
+  /** 進入頁面時捲回頂部 */
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   /** 購物車為空時，1.5 秒後導回首頁 */
   useEffect(() => {
     if (cart !== null && cart.items.length === 0) {
@@ -124,7 +129,7 @@ export default function CheckoutPage() {
         {/* ════════════════════════════════════════
             左欄：收件人表單 + 優惠券
             ════════════════════════════════════════ */}
-        <div className="checkout-left">
+        <div className="checkout-left co-fade-up co-s1">
           <h1 className="checkout-title">Shipping Details</h1>
 
           {/* API 錯誤 */}
@@ -252,7 +257,7 @@ export default function CheckoutPage() {
         {/* ════════════════════════════════════════
             右欄：Order Summary（sticky）
             ════════════════════════════════════════ */}
-        <div className="checkout-right">
+        <div className="checkout-right co-fade-up co-s2">
           <div className="checkout-summary">
             <h2 className="checkout-summary__title">Order Summary</h2>
 
