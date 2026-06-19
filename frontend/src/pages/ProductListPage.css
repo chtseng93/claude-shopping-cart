@@ -17,6 +17,7 @@
   height: 85vh;
   width: 100%;
   overflow: hidden;
+  margin-bottom: -1px;
 }
 
 /* 全幅背景圖容器 */
@@ -308,12 +309,13 @@
 
 .plp-filter-pill {
   /* 對齊設計稿 px-md py-xs = 24px / 4px */
-  padding: 7px 24px;
+  padding: 4px 24px;
   border-radius: 9999px;
   font-family: "Nunito Sans", sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   white-space: nowrap;
   border: none;
   cursor: pointer;
@@ -331,14 +333,49 @@
   background: #c8c7be;
 }
 
+.plp-filter-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #474741;
+}
+
 .plp-filter-bar__count {
   font-family: "Nunito Sans", sans-serif;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #787770;
+  color: #474741;
   white-space: nowrap;
+}
+
+.plp-filter-bar__divider {
+  width: 1px;
+  height: 16px;
+  background: #c8c7be;
+  flex-shrink: 0;
+}
+
+.plp-filter-bar__sort {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #474741;
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+.plp-filter-bar__sort:hover {
+  color: #5f5e5b;
 }
 
 /* ── 商品 Grid ── */
@@ -359,32 +396,10 @@
 
 .plp-grid {
   display: grid;
-  /* minmax(0, 1fr) 讓格子可以縮到 0，避免內容撐破格線 */
-  grid-template-columns: minmax(0, 1fr);
-  /* row 48px / col 64px — gap 約為側邊距的 2 倍，呈現設計稿的通透感 */
+  /* 固定 3 欄，對齊設計稿，不隨視窗寬度改變 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 48px 64px;
   width: 100%;
-}
-
-/* 2 欄：≥600px */
-@media (min-width: 600px) {
-  .plp-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* 3 欄：≥960px */
-@media (min-width: 960px) {
-  .plp-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* 4 欄：≥1440px 大螢幕 */
-@media (min-width: 1440px) {
-  .plp-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 }
 
 /* ── 商品卡片 ── */

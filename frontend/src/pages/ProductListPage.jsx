@@ -241,9 +241,16 @@ export default function ProductListPage() {
               </button>
             ))}
           </div>
-          <span className="plp-filter-bar__count">
-            {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
-          </span>
+          <div className="plp-filter-bar__right">
+            <span className="plp-filter-bar__count">
+              {filteredProducts.length} Products Found
+            </span>
+            <div className="plp-filter-bar__divider" aria-hidden="true" />
+            <button type="button" className="plp-filter-bar__sort">
+              Sort by: Featured
+              <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>expand_more</span>
+            </button>
+          </div>
         </div>
       </div>
 
